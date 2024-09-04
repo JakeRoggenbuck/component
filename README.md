@@ -36,3 +36,8 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 > 1 2 foo
 3
 ```
+
+## Error Handling
+
+![image](https://github.com/user-attachments/assets/993e8eb3-0ca2-4a20-8b30-37dd405992bd)
+
