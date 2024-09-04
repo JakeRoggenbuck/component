@@ -19,6 +19,114 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                 stack.push(token);
             }
 
+            TokenType::TypeIntKeyword => {
+                let first = stack.pop();
+
+                match first {
+                    Some(a) => match a.token_type {
+                        TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
+                            let a_float_res = a.value.parse::<f64>();
+                            match a_float_res {
+                                Ok(a_val) => stack.push(Token {
+                                    token_type: TokenType::NumericIntLiteral,
+                                    value: (a_val as i64).to_string(),
+                                }),
+                                Err(_) => {
+                                    println!(
+                                        "{} Wrong type",
+                                        color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                    );
+                                    println!(
+                                        "{} {}",
+                                        color!(Color::RED, bold!(a.value.as_str()).as_str()),
+                                        token.value
+                                    );
+                                    println!(
+                                        "{} value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
+                                        color!(Color::RED, bold!("^").as_str())
+                                    );
+                                }
+                            }
+                        }
+
+                        _ => {
+                            println!(
+                                "{} Invalid type cast",
+                                color!(Color::RED, bold!("Error:").as_str()).as_str()
+                            );
+                            println!("{} {}", a.value, token.value);
+
+                            println!(
+                                "{}{} Cannot convert <{}> to <NumericIntLiteral>",
+                                (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
+                                color!(Color::RED, bold!("^^^").as_str()),
+                                format!("{:?}", a.token_type)
+                            )
+                        }
+                    },
+                    None => {
+                        println!(
+                            "{} Not enough values on the stack",
+                            color!(Color::RED, bold!("Error:").as_str()).as_str()
+                        );
+                    }
+                }
+            }
+
+            TokenType::TypeDecKeyword => {
+                let first = stack.pop();
+
+                match first {
+                    Some(a) => match a.token_type {
+                        TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
+                            let a_float_res = a.value.parse::<f64>();
+                            match a_float_res {
+                                Ok(a_val) => stack.push(Token {
+                                    token_type: TokenType::NumericDecLiteral,
+                                    value: (a_val as f64).to_string(),
+                                }),
+                                Err(_) => {
+                                    println!(
+                                        "{} Wrong type",
+                                        color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                    );
+                                    println!(
+                                        "{} {}",
+                                        color!(Color::RED, bold!(a.value.as_str()).as_str()),
+                                        token.value
+                                    );
+                                    println!(
+                                        "{} value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
+                                        color!(Color::RED, bold!("^").as_str())
+                                    );
+                                }
+                            }
+                        }
+
+                        _ => {
+                            println!(
+                                "{} Invalid type cast",
+                                color!(Color::RED, bold!("Error:").as_str()).as_str()
+                            );
+                            println!("{} {}", a.value, token.value);
+
+                            println!(
+                                "{}{} Cannot convert <{}> to <NumericDecLiteral>",
+                                (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
+                                color!(Color::RED, bold!("^^^").as_str()),
+                                format!("{:?}", a.token_type)
+                            )
+                        }
+                    },
+                    None => {
+                        println!(
+                            "{} Not enough values on the stack",
+                            color!(Color::RED, bold!("Error:").as_str()).as_str()
+                        );
+                    }
+                }
+            }
+
             // Simple two argument operations/functions
             TokenType::Addition
             | TokenType::Multiplication
@@ -41,16 +149,21 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     && (n == TokenType::NumericDecLiteral
                                         || n == TokenType::NumericIntLiteral) =>
                             {
-                                let a_int_res = a.value.parse::<f64>();
-                                let b_int_res = b.value.parse::<f64>();
+                                let a_float_res = a.value.parse::<f64>();
+                                let b_float_res = b.value.parse::<f64>();
+
+                                // Parse should keep (NumericIntLiteral NumericIntLiteral Operation) as an NumericIntLiteral
+                                // if it's still a whole number and both inputs are ints
+                                let keep_int = m == TokenType::NumericIntLiteral
+                                    && n == TokenType::NumericIntLiteral;
 
                                 // Check that both numbers parsed correctly
-                                match (a_int_res, b_int_res) {
+                                match (a_float_res, b_float_res) {
                                     // Both values parsed correctly
-                                    (Ok(a_int), Ok(b_int)) => match token.token_type {
+                                    (Ok(a_float), Ok(b_float)) => match token.token_type {
                                         TokenType::Addition => {
-                                            let v = a_int + b_int;
-                                            let t_type = if v.fract() == 0.0 {
+                                            let v = a_float + b_float;
+                                            let t_type = if v.fract() == 0.0 && keep_int {
                                                 TokenType::NumericIntLiteral
                                             } else {
                                                 TokenType::NumericDecLiteral
@@ -61,8 +174,8 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             })
                                         }
                                         TokenType::Multiplication => {
-                                            let v = a_int * b_int;
-                                            let t_type = if v.fract() == 0.0 {
+                                            let v = a_float * b_float;
+                                            let t_type = if v.fract() == 0.0 && keep_int {
                                                 TokenType::NumericIntLiteral
                                             } else {
                                                 TokenType::NumericDecLiteral
@@ -73,8 +186,8 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             });
                                         }
                                         TokenType::Subtraction => {
-                                            let v = a_int - b_int;
-                                            let t_type = if v.fract() == 0.0 {
+                                            let v = a_float - b_float;
+                                            let t_type = if v.fract() == 0.0 && keep_int {
                                                 TokenType::NumericIntLiteral
                                             } else {
                                                 TokenType::NumericDecLiteral
@@ -85,8 +198,8 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             });
                                         }
                                         TokenType::Division => {
-                                            let v = a_int / b_int;
-                                            let t_type = if v.fract() == 0.0 {
+                                            let v = a_float / b_float;
+                                            let t_type = if v.fract() == 0.0 && keep_int {
                                                 TokenType::NumericIntLiteral
                                             } else {
                                                 TokenType::NumericDecLiteral
@@ -114,7 +227,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             token.value
                                         );
                                         println!(
-                                            "{} value is not a Numeric because it did not parse correcly", 
+                                            "{} value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
                                             color!(Color::RED, bold!("^").as_str())
                                         );
                                     }
@@ -130,10 +243,10 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             token.value
                                         );
                                         println!(
-                                            "{}{}value is not a Numeric because it did not parse correcly",
+                                            "{}{}value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
                                             (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
                                             color!(Color::RED, bold!("^").as_str())
-                                        );
+                                        )
                                     }
                                     (Err(_), Err(_)) => {
                                         println!(
@@ -147,7 +260,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             token.value
                                         );
                                         println!(
-                                            "{}{}{} values are not a Numeric because they did not parse correcly",
+                                            "{}{}{} values are not a <NumericIntLiteral> or <NumericDecLiteral> because they did not parse correctly",
                                             color!(Color::RED, bold!("^").as_str()),
                                             (0..a.value.len()).map(|_| " ").collect::<String>(),
                                             color!(Color::RED, bold!("^").as_str())
@@ -169,7 +282,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     token.value
                                 );
                                 println!(
-                                    "{} value is not a Numeric",
+                                    "{} value is not a <NumericIntLiteral> or <NumericDecLiteral>",
                                     color!(Color::RED, bold!("^").as_str())
                                 );
                             }
@@ -185,7 +298,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     token.value
                                 );
                                 println!(
-                                    "{}{} value is not a Numeric",
+                                    "{}{} value is not a <NumericIntLiteral> or <NumericDecLiteral>",
                                     (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
                                     color!(Color::RED, bold!("^").as_str())
                                 );
@@ -202,7 +315,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     token.value
                                 );
                                 println!(
-                                    "{}{}{} values are not a Numeric",
+                                    "{}{}{} values are not a <NumericIntLiteral> or <NumericDecLiteral>",
                                     color!(Color::RED, bold!("^").as_str()),
                                     (0..a.value.len()).map(|_| " ").collect::<String>(),
                                     color!(Color::RED, bold!("^").as_str())
@@ -211,13 +324,19 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                         }
                     }
                     _ => {
-                        println!("Not enough values on the stack.");
+                        println!(
+                            "{} Not enough values on the stack",
+                            color!(Color::RED, bold!("Error:").as_str()).as_str()
+                        );
                     }
                 }
             }
 
             _ => {
-                println!("Operation not implemented.");
+                println!(
+                    "{} Operation not implemented",
+                    color!(Color::RED, bold!("Error:").as_str()).as_str()
+                );
             }
         }
     }
