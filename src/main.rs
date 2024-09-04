@@ -26,16 +26,21 @@ fn interactive() {
                 break;
             }
 
-            println!("{:?}", a);
+            println!(
+                "{}",
+                color!(Color::BLACK, format!("Stack before: {:?}", a).as_str())
+            );
             tokens.push(a);
         }
 
         let out = parse(tokens);
-        println!(
-            "{} {}",
-            color!(Color::GREEN, bold!("->").as_str()),
-            color!(Color::BLUE, bold!(&out.value).as_str())
-        );
+        if out.token_type != TokenType::NoType {
+            println!(
+                "{} {}",
+                color!(Color::GREEN, bold!("->").as_str()),
+                color!(Color::BLUE, bold!(&out.value).as_str())
+            );
+        }
     }
 }
 

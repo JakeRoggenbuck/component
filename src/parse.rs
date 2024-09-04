@@ -4,7 +4,10 @@ use efcl::{bold, color, Color};
 pub fn parse(tokens: Vec<Token>) -> Token {
     let mut stack: Vec<Token> = vec![];
 
-    println!("Stack before: {:?}", stack);
+    println!(
+        "{}",
+        color!(Color::BLACK, format!("Stack before: {:?}", stack).as_str())
+    );
 
     // Parse postfix notation
     for token in tokens {
@@ -68,6 +71,10 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     // Give errors if values did not parse correctly
                                     (Err(_), Ok(_)) => {
                                         println!(
+                                            "{} Wrong type",
+                                            color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                        );
+                                        println!(
                                             "{} {} {}",
                                             color!(Color::RED, bold!(a.value.as_str()).as_str()),
                                             b.value,
@@ -80,6 +87,10 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     }
                                     (Ok(_), Err(_)) => {
                                         println!(
+                                            "{} Wrong type",
+                                            color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                        );
+                                        println!(
                                             "{} {} {}",
                                             a.value,
                                             color!(Color::RED, bold!(b.value.as_str()).as_str()),
@@ -87,11 +98,15 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                         );
                                         println!(
                                             "{}{}value is not a NumericIntLiteral because it did not parse correcly",
-                                            (0..a.value.len()).map(|_| " ").collect::<String>(),
+                                            (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
                                             color!(Color::RED, bold!("^").as_str())
                                         );
                                     }
                                     (Err(_), Err(_)) => {
+                                        println!(
+                                            "{} Wrong type",
+                                            color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                        );
                                         println!(
                                             "{} {} {}",
                                             color!(Color::RED, bold!(a.value.as_str()).as_str()),
@@ -111,6 +126,10 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                             // Give errors if values are not NumericIntLiteral
                             (_, TokenType::NumericIntLiteral) => {
                                 println!(
+                                    "{} Wrong type",
+                                    color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                );
+                                println!(
                                     "{} {} {}",
                                     color!(Color::RED, bold!(a.value.as_str()).as_str()),
                                     b.value,
@@ -123,18 +142,26 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                             }
                             (TokenType::NumericIntLiteral, _) => {
                                 println!(
+                                    "{} Wrong type",
+                                    color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                );
+                                println!(
                                     "{} {} {}",
                                     a.value,
                                     color!(Color::RED, bold!(b.value.as_str()).as_str()),
                                     token.value
                                 );
                                 println!(
-                                    "{}{}value is not a NumericIntLiteral",
-                                    (0..a.value.len()).map(|_| " ").collect::<String>(),
+                                    "{}{} value is not a NumericIntLiteral",
+                                    (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
                                     color!(Color::RED, bold!("^").as_str())
                                 );
                             }
                             (_, _) => {
+                                println!(
+                                    "{} Wrong type",
+                                    color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                );
                                 println!(
                                     "{} {} {}",
                                     color!(Color::RED, bold!(a.value.as_str()).as_str()),
@@ -162,9 +189,22 @@ pub fn parse(tokens: Vec<Token>) -> Token {
         }
     }
 
-    println!("Stack after: {:?}", stack);
+    println!(
+        "{}",
+        color!(Color::BLACK, format!("Stack after: {:?}", stack).as_str())
+    );
 
-    return stack.pop().expect("There should be one value left");
+    match stack.pop() {
+        Some(a) => {
+            return a;
+        }
+        None => {
+            return Token {
+                token_type: TokenType::NoType,
+                value: "".to_string(),
+            }
+        }
+    }
 }
 
 #[cfg(test)]
