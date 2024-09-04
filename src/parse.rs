@@ -1,6 +1,6 @@
-use super::lexer::{Lex, Lexer, Token, TokenType};
+use super::lexer::{Token, TokenType};
 
-pub fn parse(tokens: Vec<Token>) {
+pub fn parse(tokens: Vec<Token>) -> Token {
     let mut stack: Vec<Token> = vec![];
 
     println!("Stack before: {:?}", stack);
@@ -116,4 +116,97 @@ pub fn parse(tokens: Vec<Token>) {
     }
 
     println!("Stack after: {:?}", stack);
+
+    return stack.pop().expect("There should be one value left");
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn parse_test() {
+        let input1 = vec![
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "1".to_string(),
+            },
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "1".to_string(),
+            },
+            Token {
+                token_type: TokenType::Addition,
+                value: "+".to_string(),
+            },
+        ];
+
+        let out1 = parse(input1);
+
+        assert_eq!(
+            out1,
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "2".to_string(),
+            },
+        );
+
+        let input2 = vec![
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "3".to_string(),
+            },
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "2".to_string(),
+            },
+            Token {
+                token_type: TokenType::Multiplication,
+                value: "*".to_string(),
+            },
+        ];
+
+        let out2 = parse(input2);
+
+        assert_eq!(
+            out2,
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "6".to_string(),
+            },
+        );
+
+        let input3 = vec![
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "3".to_string(),
+            },
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "2".to_string(),
+            },
+            Token {
+                token_type: TokenType::Addition,
+                value: "+".to_string(),
+            },
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "10".to_string(),
+            },
+            Token {
+                token_type: TokenType::Multiplication,
+                value: "*".to_string(),
+            },
+        ];
+
+        let out3 = parse(input3);
+
+        assert_eq!(
+            out3,
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "50".to_string(),
+            },
+        );
+    }
 }

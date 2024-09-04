@@ -386,7 +386,7 @@ mod tests {
     fn lexer_test() {
         let mut lex: Lexer = Lexer::new(vec![]);
 
-        lex.lines = vec!["1 2 +".to_string()];
+        lex.lines = vec!["1 2 *".to_string()];
 
         assert_eq!(lex.next().value, "1");
         assert_eq!(lex.next().value, "2");
