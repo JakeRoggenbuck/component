@@ -1,4 +1,5 @@
 use super::lexer::{Token, TokenType};
+use efcl::{bold, color, Color};
 
 pub fn parse(tokens: Vec<Token>) -> Token {
     let mut stack: Vec<Token> = vec![];
@@ -15,13 +16,17 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                 stack.push(token);
             }
 
+            TokenType::Identifier => {
+                stack.push(token);
+            }
+
             // Simple two argument operations/functions
             TokenType::Addition
             | TokenType::Multiplication
             | TokenType::Subtraction
             | TokenType::Division => {
-                let first = stack.pop();
                 let second = stack.pop();
+                let first = stack.pop();
 
                 // Check that both items poped from the stack actually exist
                 // i.e. there are enough items on the stack
@@ -49,11 +54,11 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                         }),
                                         TokenType::Subtraction => stack.push(Token {
                                             token_type: TokenType::NumericIntLiteral,
-                                            value: (b_int - a_int).to_string(),
+                                            value: (a_int - b_int).to_string(),
                                         }),
                                         TokenType::Division => stack.push(Token {
                                             token_type: TokenType::NumericIntLiteral,
-                                            value: (b_int / a_int).to_string(),
+                                            value: (a_int / b_int).to_string(),
                                         }),
                                         _ => {
                                             unreachable!();
@@ -62,21 +67,42 @@ pub fn parse(tokens: Vec<Token>) -> Token {
 
                                     // Give errors if values did not parse correctly
                                     (Err(_), Ok(_)) => {
-                                        println!("{} {} {}", a.value, b.value, token.value);
-                                        println!("^ value is not a NumericIntLiteral because it did not parse correcly");
+                                        println!(
+                                            "{} {} {}",
+                                            color!(Color::RED, bold!(a.value.as_str()).as_str()),
+                                            b.value,
+                                            token.value
+                                        );
+                                        println!(
+                                            "{} value is not a NumericIntLiteral because it did not parse correcly", 
+                                            color!(Color::RED, bold!("^").as_str())
+                                        );
                                     }
                                     (Ok(_), Err(_)) => {
-                                        println!("{} {} {}", a.value, b.value, token.value);
                                         println!(
-                                            "{}^value is not a NumericIntLiteral because it did not parse correcly",
-                                            (0..a.value.len()).map(|_| " ").collect::<String>()
+                                            "{} {} {}",
+                                            a.value,
+                                            color!(Color::RED, bold!(b.value.as_str()).as_str()),
+                                            token.value
+                                        );
+                                        println!(
+                                            "{}{}value is not a NumericIntLiteral because it did not parse correcly",
+                                            (0..a.value.len()).map(|_| " ").collect::<String>(),
+                                            color!(Color::RED, bold!("^").as_str())
                                         );
                                     }
                                     (Err(_), Err(_)) => {
-                                        println!("{} {} {}", a.value, b.value, token.value);
                                         println!(
-                                            "^{}^ values are not a NumericIntLiteral because they did not parse correcly",
+                                            "{} {} {}",
+                                            color!(Color::RED, bold!(a.value.as_str()).as_str()),
+                                            color!(Color::RED, bold!(b.value.as_str()).as_str()),
+                                            token.value
+                                        );
+                                        println!(
+                                            "{}{}{} values are not a NumericIntLiteral because they did not parse correcly",
+                                            color!(Color::RED, bold!("^").as_str()),
                                             (0..a.value.len()).map(|_| " ").collect::<String>(),
+                                            color!(Color::RED, bold!("^").as_str())
                                         );
                                     }
                                 }
@@ -84,21 +110,42 @@ pub fn parse(tokens: Vec<Token>) -> Token {
 
                             // Give errors if values are not NumericIntLiteral
                             (_, TokenType::NumericIntLiteral) => {
-                                println!("{} {} {}", a.value, b.value, token.value);
-                                println!("^ value is not a NumericIntLiteral");
+                                println!(
+                                    "{} {} {}",
+                                    color!(Color::RED, bold!(a.value.as_str()).as_str()),
+                                    b.value,
+                                    token.value
+                                );
+                                println!(
+                                    "{} value is not a NumericIntLiteral",
+                                    color!(Color::RED, bold!("^").as_str())
+                                );
                             }
                             (TokenType::NumericIntLiteral, _) => {
-                                println!("{} {} {}", a.value, b.value, token.value);
                                 println!(
-                                    "{}^value is not a NumericIntLiteral",
-                                    (0..a.value.len()).map(|_| " ").collect::<String>()
+                                    "{} {} {}",
+                                    a.value,
+                                    color!(Color::RED, bold!(b.value.as_str()).as_str()),
+                                    token.value
+                                );
+                                println!(
+                                    "{}{}value is not a NumericIntLiteral",
+                                    (0..a.value.len()).map(|_| " ").collect::<String>(),
+                                    color!(Color::RED, bold!("^").as_str())
                                 );
                             }
                             (_, _) => {
-                                println!("{} {} {}", a.value, b.value, token.value);
                                 println!(
-                                    "^{}^ values are not a NumericIntLiteral",
+                                    "{} {} {}",
+                                    color!(Color::RED, bold!(a.value.as_str()).as_str()),
+                                    color!(Color::RED, bold!(b.value.as_str()).as_str()),
+                                    token.value
+                                );
+                                println!(
+                                    "{}{}{} values are not a NumericIntLiteral",
+                                    color!(Color::RED, bold!("^").as_str()),
                                     (0..a.value.len()).map(|_| " ").collect::<String>(),
+                                    color!(Color::RED, bold!("^").as_str())
                                 );
                             }
                         }
