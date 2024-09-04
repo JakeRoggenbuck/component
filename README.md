@@ -2,7 +2,6 @@
 ![Component Logo](./images/Component_light_mode.png#gh-light-mode-only)
 <br>
 A math language using postfix notation.
-<hr>
 
 ## About
 
