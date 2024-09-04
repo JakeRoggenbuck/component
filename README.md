@@ -1,7 +1,8 @@
 ![Component Logo](./images/Component_dark_mode.png#gh-dark-mode-only)
 ![Component Logo](./images/Component_light_mode.png#gh-light-mode-only)
-A math language using postfix notation.
 <br>
+A math language using postfix notation.
+<hr>
 
 Component is the follow-up language to [Basis](https://github.com/JakeRoggenbuck/basis) which is also a math language. Component was built with insights learned from writing Basis. The main difference between the two is that Basis has a more complicated syntax which included types and data structures whereas Component uses postfix notation with the addition of functions as operations.
 
