@@ -1,8 +1,6 @@
 ![Component Logo](./images/Component_dark_mode.png#gh-dark-mode-only)
 ![Component Logo](./images/Component_light_mode.png#gh-light-mode-only)
 
-# Component
-
 ## Basic Math Operations
 
 ```
