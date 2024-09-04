@@ -18,14 +18,14 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 
 ```
 > 1 1 +
-2
+-> 2
 ```
 
 ## Vector Operations (Coming Soon)
 
 ```
 > 1 2 3 > 5 6 7 > x
-4 -8 4
+-> 4 -8 4
 ```
 
 ## Function (Coming Soon)
@@ -34,7 +34,22 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 > x y + func foo
 
 > 1 2 foo
-3
+-> 3
+```
+
+## Type Conversion
+
+```
+> 4 5 /
+-> 0.8
+
+> 4 5 / int
+-> 0
+```
+
+```
+> 2 dec
+-> 1
 ```
 
 ## Error Handling
