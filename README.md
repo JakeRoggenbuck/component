@@ -11,6 +11,9 @@ Note that the symbol `>` is used in code example to show that these expressions 
 
 The code for Component and Basis use the same lexer. Component is mainly different because it has a different syntax. The lexer for basis was written generally enough that this code can be shared. It also helps that Basis is a math language inspired by postfix notation but not exclusively postfix notation.
 
+## Interactive interpreter
+![image](https://github.com/user-attachments/assets/cef00b75-0539-4eff-97ce-8cb8a84e98dc)
+
 ## Basic Math Operations
 
 ```
