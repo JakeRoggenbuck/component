@@ -30,7 +30,8 @@ fn interactive() {
             tokens.push(a);
         }
 
-        parse(tokens);
+        let out = parse(tokens);
+        println!("{}", out.value);
     }
 }
 
