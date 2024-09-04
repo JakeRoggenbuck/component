@@ -147,6 +147,12 @@ pub struct Token {
 fn is_part_int_numeric(part: &str) -> bool {
     let mut chars = part.chars();
 
+    // Literal 0 case
+    let mut a = chars.clone();
+    if a.clone().count() == 1 && a.nth(0) == Some('0') {
+        return true;
+    }
+
     let first_char = chars
         .nth(0)
         .expect("Part should have more than zero characters");
@@ -435,6 +441,12 @@ mod tests {
     #[test]
     fn is_char_whitespace_test() {
         assert!(is_char_whitespace(' '));
+    }
+
+    #[test]
+    fn is_part_int_numeric_test() {
+        assert!(is_part_int_numeric("1"));
+        assert!(is_part_int_numeric("0"));
     }
 
     #[test]
