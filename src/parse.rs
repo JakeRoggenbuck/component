@@ -15,11 +15,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
         // if it's a literal, add it to the stack
         // if it's an operation, pop values from the stack and apply the operation
         match token.token_type {
-            TokenType::NumericIntLiteral => {
-                stack.push(token);
-            }
-
-            TokenType::Identifier => {
+            TokenType::NumericIntLiteral | TokenType::NumericDecLiteral | TokenType::Identifier => {
                 stack.push(token);
             }
 
@@ -38,31 +34,68 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                     (Some(a), Some(b)) => {
                         // Check the type of the two items poped from the stack
                         match (a.token_type, b.token_type) {
-                            // Both token are NumericIntLiteral
-                            (TokenType::NumericIntLiteral, TokenType::NumericIntLiteral) => {
-                                let a_int_res = a.value.parse::<i32>();
-                                let b_int_res = b.value.parse::<i32>();
+                            // Both token are NumericIntLiteral or NumericDecLiteral
+                            (m, n)
+                                if (m == TokenType::NumericDecLiteral
+                                    || m == TokenType::NumericIntLiteral)
+                                    && (n == TokenType::NumericDecLiteral
+                                        || n == TokenType::NumericIntLiteral) =>
+                            {
+                                let a_int_res = a.value.parse::<f64>();
+                                let b_int_res = b.value.parse::<f64>();
 
                                 // Check that both numbers parsed correctly
                                 match (a_int_res, b_int_res) {
                                     // Both values parsed correctly
                                     (Ok(a_int), Ok(b_int)) => match token.token_type {
-                                        TokenType::Addition => stack.push(Token {
-                                            token_type: TokenType::NumericIntLiteral,
-                                            value: (a_int + b_int).to_string(),
-                                        }),
-                                        TokenType::Multiplication => stack.push(Token {
-                                            token_type: TokenType::NumericIntLiteral,
-                                            value: (a_int * b_int).to_string(),
-                                        }),
-                                        TokenType::Subtraction => stack.push(Token {
-                                            token_type: TokenType::NumericIntLiteral,
-                                            value: (a_int - b_int).to_string(),
-                                        }),
-                                        TokenType::Division => stack.push(Token {
-                                            token_type: TokenType::NumericIntLiteral,
-                                            value: (a_int / b_int).to_string(),
-                                        }),
+                                        TokenType::Addition => {
+                                            let v = a_int + b_int;
+                                            let t_type = if v.fract() == 0.0 {
+                                                TokenType::NumericIntLiteral
+                                            } else {
+                                                TokenType::NumericDecLiteral
+                                            };
+                                            stack.push(Token {
+                                                token_type: t_type,
+                                                value: v.to_string(),
+                                            })
+                                        }
+                                        TokenType::Multiplication => {
+                                            let v = a_int * b_int;
+                                            let t_type = if v.fract() == 0.0 {
+                                                TokenType::NumericIntLiteral
+                                            } else {
+                                                TokenType::NumericDecLiteral
+                                            };
+                                            stack.push(Token {
+                                                token_type: t_type,
+                                                value: v.to_string(),
+                                            });
+                                        }
+                                        TokenType::Subtraction => {
+                                            let v = a_int - b_int;
+                                            let t_type = if v.fract() == 0.0 {
+                                                TokenType::NumericIntLiteral
+                                            } else {
+                                                TokenType::NumericDecLiteral
+                                            };
+                                            stack.push(Token {
+                                                token_type: t_type,
+                                                value: v.to_string(),
+                                            });
+                                        }
+                                        TokenType::Division => {
+                                            let v = a_int / b_int;
+                                            let t_type = if v.fract() == 0.0 {
+                                                TokenType::NumericIntLiteral
+                                            } else {
+                                                TokenType::NumericDecLiteral
+                                            };
+                                            stack.push(Token {
+                                                token_type: t_type,
+                                                value: v.to_string(),
+                                            });
+                                        }
                                         _ => {
                                             unreachable!();
                                         }
@@ -81,7 +114,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             token.value
                                         );
                                         println!(
-                                            "{} value is not a NumericIntLiteral because it did not parse correcly", 
+                                            "{} value is not a Numeric because it did not parse correcly", 
                                             color!(Color::RED, bold!("^").as_str())
                                         );
                                     }
@@ -97,7 +130,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             token.value
                                         );
                                         println!(
-                                            "{}{}value is not a NumericIntLiteral because it did not parse correcly",
+                                            "{}{}value is not a Numeric because it did not parse correcly",
                                             (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
                                             color!(Color::RED, bold!("^").as_str())
                                         );
@@ -114,7 +147,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                             token.value
                                         );
                                         println!(
-                                            "{}{}{} values are not a NumericIntLiteral because they did not parse correcly",
+                                            "{}{}{} values are not a Numeric because they did not parse correcly",
                                             color!(Color::RED, bold!("^").as_str()),
                                             (0..a.value.len()).map(|_| " ").collect::<String>(),
                                             color!(Color::RED, bold!("^").as_str())
@@ -123,7 +156,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                 }
                             }
 
-                            // Give errors if values are not NumericIntLiteral
+                            // Give errors if values are not NumericIntLiteral or NumericDecLiteral
                             (_, TokenType::NumericIntLiteral) => {
                                 println!(
                                     "{} Wrong type",
@@ -136,7 +169,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     token.value
                                 );
                                 println!(
-                                    "{} value is not a NumericIntLiteral",
+                                    "{} value is not a Numeric",
                                     color!(Color::RED, bold!("^").as_str())
                                 );
                             }
@@ -152,7 +185,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     token.value
                                 );
                                 println!(
-                                    "{}{} value is not a NumericIntLiteral",
+                                    "{}{} value is not a Numeric",
                                     (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
                                     color!(Color::RED, bold!("^").as_str())
                                 );
@@ -169,7 +202,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                     token.value
                                 );
                                 println!(
-                                    "{}{}{} values are not a NumericIntLiteral",
+                                    "{}{}{} values are not a Numeric",
                                     color!(Color::RED, bold!("^").as_str()),
                                     (0..a.value.len()).map(|_| " ").collect::<String>(),
                                     color!(Color::RED, bold!("^").as_str())
