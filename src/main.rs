@@ -31,7 +31,11 @@ fn interactive() {
         }
 
         let out = parse(tokens);
-        println!("{}", out.value);
+        println!(
+            "{} {}",
+            color!(Color::GREEN, bold!("->").as_str()),
+            color!(Color::BLUE, bold!(&out.value).as_str())
+        );
     }
 }
 
