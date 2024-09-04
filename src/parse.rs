@@ -49,11 +49,11 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                                         }),
                                         TokenType::Subtraction => stack.push(Token {
                                             token_type: TokenType::NumericIntLiteral,
-                                            value: (a_int - b_int).to_string(),
+                                            value: (b_int - a_int).to_string(),
                                         }),
                                         TokenType::Division => stack.push(Token {
                                             token_type: TokenType::NumericIntLiteral,
-                                            value: (a_int / b_int).to_string(),
+                                            value: (b_int / a_int).to_string(),
                                         }),
                                         _ => {
                                             unreachable!();
