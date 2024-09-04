@@ -1,8 +1,10 @@
 use crate::lexer::{Lex, Lexer, Token, TokenType};
 use efcl::{bold, color, Color};
+use parse::parse;
 use std::io::{stdin, stdout, Write};
 
 pub mod lexer;
+pub mod parse;
 
 fn interactive() {
     loop {
@@ -27,6 +29,8 @@ fn interactive() {
             println!("{:?}", a);
             tokens.push(a);
         }
+
+        parse(tokens);
     }
 }
 
