@@ -70,11 +70,11 @@ Variables are statically typed in Component. Here is an example usage of a varia
 
 ![image](https://github.com/user-attachments/assets/f20443c1-3a83-4336-9b01-2309e2bc0af9)
 
-## Function (Coming Soon)
-Create an addition function called `foo`.
+## Function
+Create an addition function called `foo`. Note that to start a function you do in fact need to use the `>` again to tell the interpreter that the following is a function and should not be evaluated.
 
 ```
-> x y + foo func
+> > + foo func
 
 > 1 2 foo
 -> 3
