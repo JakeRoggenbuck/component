@@ -148,5 +148,9 @@ Error: Operation Not Implemented [E5]
 Error: Operation Not Implemented [E5]
 ```
 
+#### Example of errors
+
+Here is an example of what this might look like in the interactive interpreter.
+
 ![image](https://github.com/user-attachments/assets/993e8eb3-0ca2-4a20-8b30-37dd405992bd)
 
