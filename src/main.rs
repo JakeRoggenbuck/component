@@ -3,6 +3,7 @@ use efcl::{bold, color, Color};
 use parse::{create_parser, Parser};
 use std::io::{stdin, stdout, Write};
 
+pub mod display;
 pub mod lexer;
 pub mod parse;
 
