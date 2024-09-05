@@ -68,15 +68,6 @@ pub fn parse(
         }
 
         if function_mode {
-            // Experimental feature
-            //
-            // Ideas: Have a bool called function_stack and when you give a `>` character, the
-            // parser goes into function stack mode where every symbol is put onto the function
-            // stack and not evaluated. When the parser gets the keyword `func` it goes back to
-            // regular mode. It then collects everything in the function stack and saves it in
-            // the function_memory to be used later. It then clears the function memory and
-            // continues to read commands.
-
             match token.token_type {
                 TokenType::Function => {
                     function_mode = false;
@@ -665,6 +656,22 @@ mod tests {
             },
         );
 
+        local_memory.insert(
+            "pi".to_string(),
+            Token {
+                token_type: TokenType::NumericDecLiteral,
+                value: std::f64::consts::PI.to_string(),
+            },
+        );
+
+        local_memory.insert(
+            "C".to_string(),
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "299792458".to_string(),
+            },
+        );
+
         let input1 = vec![
             Token {
                 token_type: TokenType::NumericIntLiteral,
@@ -745,6 +752,123 @@ mod tests {
             Token {
                 token_type: TokenType::NumericIntLiteral,
                 value: "50".to_string(),
+            },
+        );
+
+        let input4 = vec![
+            Token {
+                token_type: TokenType::Greater,
+                value: ">".to_string(),
+            },
+            Token {
+                token_type: TokenType::Identifier,
+                value: "t".to_string(),
+            },
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "1".to_string(),
+            },
+            Token {
+                token_type: TokenType::Identifier,
+                value: "v".to_string(),
+            },
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "2".to_string(),
+            },
+            Token {
+                token_type: TokenType::Carrot,
+                value: "^".to_string(),
+            },
+            Token {
+                token_type: TokenType::Identifier,
+                value: "C".to_string(),
+            },
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "2".to_string(),
+            },
+            Token {
+                token_type: TokenType::Carrot,
+                value: "^".to_string(),
+            },
+            Token {
+                token_type: TokenType::Division,
+                value: "/".to_string(),
+            },
+            Token {
+                token_type: TokenType::Subtraction,
+                value: "-".to_string(),
+            },
+            Token {
+                token_type: TokenType::TypeSqrtKeyword,
+                value: "sqrt".to_string(),
+            },
+            Token {
+                token_type: TokenType::Division,
+                value: "/".to_string(),
+            },
+            Token {
+                token_type: TokenType::Identifier,
+                value: "s".to_string(),
+            },
+            Token {
+                token_type: TokenType::Function,
+                value: "fn".to_string(),
+            },
+        ];
+
+        let out4 = parse(input4, &mut local_memory, &mut function_memory, true);
+
+        assert_eq!(
+            out4,
+            Token {
+                token_type: TokenType::NoType,
+                value: "".to_string(),
+            },
+        );
+
+        let input5 = vec![
+            // Set var v
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "300040".to_string(),
+            },
+            Token {
+                token_type: TokenType::Identifier,
+                value: "v".to_string(),
+            },
+            Token {
+                token_type: TokenType::Assignment,
+                value: "=".to_string(),
+            },
+            // Set var t
+            Token {
+                token_type: TokenType::NumericIntLiteral,
+                value: "30".to_string(),
+            },
+            Token {
+                token_type: TokenType::Identifier,
+                value: "t".to_string(),
+            },
+            Token {
+                token_type: TokenType::Assignment,
+                value: "=".to_string(),
+            },
+            // Call s
+            Token {
+                token_type: TokenType::Identifier,
+                value: "s".to_string(),
+            },
+        ];
+
+        let out5 = parse(input5, &mut local_memory, &mut function_memory, true);
+
+        assert_eq!(
+            out5,
+            Token {
+                token_type: TokenType::NumericDecLiteral,
+                value: "30.00001502479285".to_string(),
             },
         );
     }
