@@ -11,6 +11,7 @@ fn interactive() {
     let verbose = false;
 
     let mut local_memory = HashMap::new();
+    let mut function_memory = HashMap::new();
 
     local_memory.insert(
         "e".to_string(),
@@ -64,7 +65,7 @@ fn interactive() {
             tokens.push(a);
         }
 
-        let out = parse(tokens, &mut local_memory, verbose);
+        let out = parse(tokens, &mut local_memory, &mut function_memory, verbose);
         if out.token_type != TokenType::NoType {
             println!(
                 "{} {}",

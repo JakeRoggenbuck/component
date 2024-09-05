@@ -25,8 +25,11 @@ fn variable_check_pop(
 pub fn parse(
     tokens: Vec<Token>,
     local_memory: &mut HashMap<String, Token>,
+    function_memory: &mut HashMap<String, Vec<Token>>,
     verbose: bool,
 ) -> Token {
+    let features_function = false;
+
     let mut stack: Vec<Token> = vec![];
 
     if verbose {
@@ -54,6 +57,56 @@ pub fn parse(
         match token.token_type {
             TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
                 stack.push(token);
+            }
+
+            TokenType::Function => {
+                // Experimental feature
+                //
+                // Ideas: Have a bool called function_stack and when you give a `>` character, the
+                // parser goes into function stack mode where every symbol is put onto the function
+                // stack and not evaluated. When the parser gets the keyword `func` it goes back to
+                // regular mode. It then collects everything in the function stack and saves it in
+                // the function_memory to be used later. It then clears the function memory and
+                // continues to read commands.
+                if features_function {
+                    let func_name = variable_check_pop(&mut stack, local_memory);
+
+                    if let Some(name) = func_name {
+                        match function_memory.get(&name.value) {
+                            Some(_) => {
+                                println!(
+                                    "{} Function Already Exists [E6]",
+                                    color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                );
+                                println!(
+                                    "{}",
+                                    color!(Color::RED, bold!(name.value.as_str()).as_str()),
+                                );
+                                println!(
+                                    "{} function with the same name already exists",
+                                    color!(
+                                        Color::RED,
+                                        bold!(&(0..name.value.len())
+                                            .map(|_| "^")
+                                            .collect::<String>())
+                                        .as_str()
+                                    ),
+                                );
+                            }
+                            None => {
+                                function_memory.insert(name.value, stack.clone());
+                                println!("{:?}", stack.clone());
+                                // Clear the function off the stack
+                                stack = Vec::<Token>::new();
+                            }
+                        }
+                    }
+                } else {
+                    println!(
+                        "{} Operation Not Implemented [E5]",
+                        color!(Color::RED, bold!("Error:").as_str()).as_str()
+                    );
+                }
             }
 
             TokenType::Identifier => match local_memory.get(&token.value) {
@@ -527,6 +580,7 @@ mod tests {
     #[test]
     fn parse_test() {
         let mut local_memory = HashMap::new();
+        let mut function_memory = HashMap::new();
 
         local_memory.insert(
             "e".to_string(),
@@ -551,7 +605,7 @@ mod tests {
             },
         ];
 
-        let out1 = parse(input1, &mut local_memory, true);
+        let out1 = parse(input1, &mut local_memory, &mut function_memory, true);
 
         assert_eq!(
             out1,
@@ -576,7 +630,7 @@ mod tests {
             },
         ];
 
-        let out2 = parse(input2, &mut local_memory, true);
+        let out2 = parse(input2, &mut local_memory, &mut function_memory, true);
 
         assert_eq!(
             out2,
@@ -609,7 +663,7 @@ mod tests {
             },
         ];
 
-        let out3 = parse(input3, &mut local_memory, true);
+        let out3 = parse(input3, &mut local_memory, &mut function_memory, true);
 
         assert_eq!(
             out3,

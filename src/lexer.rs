@@ -109,6 +109,8 @@ pub enum TokenType {
     TypeSizeKeyword,
     TypeSqrtKeyword,
 
+    Function,
+
     // Variable name like "a"
     Identifier,
 
@@ -127,6 +129,7 @@ fn is_type(maybe_type: &str) -> TokenType {
         "imaginary" => TokenType::TypeImaginaryKeyword,
         "size" => TokenType::TypeSizeKeyword,
         "sqrt" => TokenType::TypeSqrtKeyword,
+        "fn" => TokenType::Function,
 
         // Other types
         // "literal" | "type" | "option" | "string" => true,
