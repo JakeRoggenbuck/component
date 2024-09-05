@@ -38,6 +38,16 @@ pub fn parse(
 
     // Parse postfix notation
     for token in tokens {
+        if verbose {
+            println!(
+                "{}",
+                color!(
+                    Color::BLACK,
+                    format!("Stack right now: {:?}", stack).as_str()
+                )
+            );
+        }
+
         // Match the type of token
         // if it's a literal, add it to the stack
         // if it's an operation, pop values from the stack and apply the operation
@@ -267,7 +277,8 @@ pub fn parse(
             TokenType::Addition
             | TokenType::Multiplication
             | TokenType::Subtraction
-            | TokenType::Division => {
+            | TokenType::Division
+            | TokenType::Carrot => {
                 let second = variable_check_pop(&mut stack, local_memory);
                 let first = variable_check_pop(&mut stack, local_memory);
 
@@ -335,6 +346,18 @@ pub fn parse(
                                         }
                                         TokenType::Division => {
                                             let v = a_float / b_float;
+                                            let t_type = if v.fract() == 0.0 && keep_int {
+                                                TokenType::NumericIntLiteral
+                                            } else {
+                                                TokenType::NumericDecLiteral
+                                            };
+                                            stack.push(Token {
+                                                token_type: t_type,
+                                                value: v.to_string(),
+                                            });
+                                        }
+                                        TokenType::Carrot => {
+                                            let v = a_float.powf(b_float);
                                             let t_type = if v.fract() == 0.0 && keep_int {
                                                 TokenType::NumericIntLiteral
                                             } else {

@@ -75,6 +75,8 @@ pub enum TokenType {
     Multiplication,
     Division,
 
+    Carrot,
+
     Greater,
     Less,
 
@@ -214,6 +216,7 @@ impl TokenTrait for Token {
 
                 ">" => TokenType::Greater,
                 "<" => TokenType::Less,
+                "^" => TokenType::Carrot,
 
                 "=" => TokenType::Assignment,
                 ";" => TokenType::Semicolon,

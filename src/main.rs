@@ -8,7 +8,7 @@ pub mod lexer;
 pub mod parse;
 
 fn interactive() {
-    let verbose = false;
+    let verbose = true;
 
     let mut local_memory = HashMap::new();
 
