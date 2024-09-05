@@ -223,7 +223,7 @@ impl Parser for ParserState {
                             match a_float_res {
                                 Ok(a_val) => self.stack.push(Token {
                                     token_type: TokenType::BoolLiteral,
-                                    value: (a_val != 0.0).to_string(),
+                                    value: ((a_val != 0.0) as i32).to_string(),
                                 }),
                                 Err(_) => wrong_type_error_first(a.value, token.value),
                             }
