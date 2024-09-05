@@ -15,11 +15,14 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 ![image](https://github.com/user-attachments/assets/3d1978d6-c3b7-4954-9ba5-6b8958e396b1)
 
 ## Basic Math Operations
+Add two numbers together.
 
 ```
 > 1 1 +
 -> 2
 ```
+
+This also works with `-` for subtraction, `*` for multiplication, and `/` for division.
 
 ## Vector Operations (Coming Soon)
 
@@ -28,7 +31,23 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 -> 4 -8 4
 ```
 
+## Variables (Coming Soon)
+
+Assign the value 2 to variable `a`.
+
+```
+> a 2 =
+-> 2
+```
+
+Use the variable `a`.
+```
+a 4 *
+-> 8
+```
+
 ## Function (Coming Soon)
+Create an addition function called `foo`.
 
 ```
 > x y + func foo
