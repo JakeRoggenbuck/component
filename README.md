@@ -25,6 +25,13 @@ Note that the symbol `>` is used in code example to show that these expressions 
 ## Built-in Functions
 - `sqrt` Square root
 
+## Operations
+- `+` addition
+- `-` subtraction
+- `*` multiplication
+- `/` division
+- `^` exponentiation
+
 ## Basic Math Operations
 Add two numbers together.
 
