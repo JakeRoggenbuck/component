@@ -105,6 +105,7 @@ pub enum TokenType {
     TypeComplexKeyword,
     TypeImaginaryKeyword,
     TypeSizeKeyword,
+    TypeSqrtKeyword,
 
     // Variable name like "a"
     Identifier,
@@ -123,6 +124,7 @@ fn is_type(maybe_type: &str) -> TokenType {
         "complex" => TokenType::TypeComplexKeyword,
         "imaginary" => TokenType::TypeImaginaryKeyword,
         "size" => TokenType::TypeSizeKeyword,
+        "sqrt" => TokenType::TypeSqrtKeyword,
 
         // Other types
         // "literal" | "type" | "option" | "string" => true,

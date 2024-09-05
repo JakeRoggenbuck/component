@@ -59,6 +59,40 @@ pub fn parse(
                 None => stack.push(token),
             },
 
+            TokenType::TypeSqrtKeyword => {
+                let first = variable_check_pop(&mut stack, local_memory);
+
+                if let Some(a) = first {
+                    let a_float_res = a.value.parse::<f64>();
+                    match a_float_res {
+                        Ok(a_val) => stack.push(Token {
+                            token_type: TokenType::NumericIntLiteral,
+                            value: ((a_val as f64).sqrt()).to_string(),
+                        }),
+                        Err(_) => {
+                            println!(
+                                "{} Wrong Type [E2]",
+                                color!(Color::RED, bold!("Error:").as_str()).as_str()
+                            );
+                            println!(
+                                "{} {}",
+                                color!(Color::RED, bold!(a.value.as_str()).as_str()),
+                                token.value
+                            );
+                            println!(
+                                "{} value is not a <NumericIntLiteral> or <NumericDecLiteral>",
+                                color!(Color::RED, bold!("^").as_str())
+                            );
+                        }
+                    }
+                } else {
+                    println!(
+                        "{} Stack Empty [E4]",
+                        color!(Color::RED, bold!("Error:").as_str()).as_str()
+                    );
+                }
+            }
+
             // Create variables
             TokenType::Assignment => {
                 // Use raw stack.pop here
