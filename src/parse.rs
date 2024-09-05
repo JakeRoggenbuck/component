@@ -67,9 +67,6 @@ pub fn parse(
 
                 match (first, second) {
                     (Some(a), Some(b)) => {
-                        println!("{:?}", a);
-                        println!("{:?}", b);
-                        println!("{:?}", token);
                         // Does the variable already exist?
                         match local_memory.get(&b.value) {
                             Some(tok) => {
