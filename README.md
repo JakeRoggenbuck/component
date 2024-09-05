@@ -187,3 +187,8 @@ Here is an example of what this might look like in the interactive interpreter.
 
 ![image](https://github.com/user-attachments/assets/993e8eb3-0ca2-4a20-8b30-37dd405992bd)
 
+
+## More About Component
+
+#### Why is it called Component
+Component is named after vectors, where a single scalar in a vector is called a "component" of that vector (e.g. < 1 2 3 > where 1, 2, and 3 are all components. This is also in reference to the name [Basis](https://github.com/JakeRoggenbuck/basis), where a basis vector is a subset of a vector space where the vectors are linearly independent.
