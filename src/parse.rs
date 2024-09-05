@@ -8,6 +8,7 @@ pub trait Parser {
     fn parse(&mut self, tokens: Vec<Token>) -> Token;
 }
 
+#[derive(Debug)]
 pub struct ParserState {
     function_mode: bool,
     verbose: bool,
@@ -16,6 +17,7 @@ pub struct ParserState {
     local_memory: HashMap<String, Token>,
     function_stack: Vec<Token>,
     function_memory: HashMap<String, Vec<Token>>,
+    token_index: usize,
 }
 
 impl Parser for ParserState {
@@ -529,11 +531,9 @@ impl Parser for ParserState {
         self.function_mode = false;
         self.token_stack.append(&mut tokens.clone());
 
-        let mut i = 0;
-
         // Parse postfix notation
-        while i < self.token_stack.len() {
-            let token = self.token_stack[i].clone();
+        while self.token_index < self.token_stack.len() {
+            let token = self.token_stack[self.token_index].clone();
 
             if self.verbose {
                 println!(
@@ -605,7 +605,8 @@ impl Parser for ParserState {
                                 }
                             }
                         }
-                        i += 1;
+                        self.token_index += 1;
+
                         continue;
                     }
                     _ => {
@@ -616,7 +617,7 @@ impl Parser for ParserState {
                 self.match_token_type(token);
             }
 
-            i += 1;
+            self.token_index += 1;
         }
 
         if self.verbose {
@@ -679,6 +680,7 @@ pub fn create_parser(verbose: bool) -> ParserState {
         stack: Vec::<Token>::new(),
         token_stack: Vec::<Token>::new(),
         function_stack: Vec::<Token>::new(),
+        token_index: 0,
     }
 }
 
