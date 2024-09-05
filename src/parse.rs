@@ -22,13 +22,19 @@ fn variable_check_pop(
     return first;
 }
 
-pub fn parse(tokens: Vec<Token>, local_memory: &mut HashMap<String, Token>) -> Token {
+pub fn parse(
+    tokens: Vec<Token>,
+    local_memory: &mut HashMap<String, Token>,
+    verbose: bool,
+) -> Token {
     let mut stack: Vec<Token> = vec![];
 
-    println!(
-        "{}",
-        color!(Color::BLACK, format!("Stack before: {:?}", stack).as_str())
-    );
+    if verbose {
+        println!(
+            "{}",
+            color!(Color::BLACK, format!("Stack before: {:?}", stack).as_str())
+        );
+    }
 
     // Parse postfix notation
     for token in tokens {
@@ -61,20 +67,21 @@ pub fn parse(tokens: Vec<Token>, local_memory: &mut HashMap<String, Token>) -> T
 
                 match (first, second) {
                     (Some(a), Some(b)) => {
+                        println!("{:?}", a);
+                        println!("{:?}", b);
+                        println!("{:?}", token);
                         // Does the variable already exist?
-
                         match local_memory.get(&b.value) {
                             Some(tok) => {
                                 // Assigning to the same type as the existing variable
-                                if tok.token_type == b.token_type {
+                                if tok.token_type == a.token_type {
                                     // Write variable to memory
-                                    local_memory.insert(
-                                        b.value,
-                                        Token {
-                                            token_type: a.token_type,
-                                            value: a.value,
-                                        },
-                                    );
+                                    let out = Token {
+                                        token_type: a.token_type,
+                                        value: a.value,
+                                    };
+                                    local_memory.insert(b.value, out.clone());
+                                    stack.push(out);
                                 } else {
                                     println!(
                                         "{} Assignment Type Mismatch",
@@ -104,13 +111,12 @@ pub fn parse(tokens: Vec<Token>, local_memory: &mut HashMap<String, Token>) -> T
                             }
                             None => {
                                 // Write variable to memory
-                                local_memory.insert(
-                                    b.value,
-                                    Token {
-                                        token_type: a.token_type,
-                                        value: a.value,
-                                    },
-                                );
+                                let out = Token {
+                                    token_type: a.token_type,
+                                    value: a.value,
+                                };
+                                local_memory.insert(b.value, out.clone());
+                                stack.push(out);
                             }
                         }
                     }
@@ -440,10 +446,12 @@ pub fn parse(tokens: Vec<Token>, local_memory: &mut HashMap<String, Token>) -> T
         }
     }
 
-    println!(
-        "{}",
-        color!(Color::BLACK, format!("Stack after: {:?}", stack).as_str())
-    );
+    if verbose {
+        println!(
+            "{}",
+            color!(Color::BLACK, format!("Stack after: {:?}", stack).as_str())
+        );
+    }
 
     match stack.pop() {
         Some(a) => {
@@ -489,7 +497,7 @@ mod tests {
             },
         ];
 
-        let out1 = parse(input1, &mut local_memory);
+        let out1 = parse(input1, &mut local_memory, true);
 
         assert_eq!(
             out1,
@@ -514,7 +522,7 @@ mod tests {
             },
         ];
 
-        let out2 = parse(input2, &mut local_memory);
+        let out2 = parse(input2, &mut local_memory, true);
 
         assert_eq!(
             out2,
@@ -547,7 +555,7 @@ mod tests {
             },
         ];
 
-        let out3 = parse(input3, &mut local_memory);
+        let out3 = parse(input3, &mut local_memory, true);
 
         assert_eq!(
             out3,

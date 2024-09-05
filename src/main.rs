@@ -8,6 +8,8 @@ pub mod lexer;
 pub mod parse;
 
 fn interactive() {
+    let verbose = false;
+
     let mut local_memory = HashMap::new();
 
     local_memory.insert(
@@ -37,14 +39,16 @@ fn interactive() {
                 break;
             }
 
-            println!(
-                "{}",
-                color!(Color::BLACK, format!("Stack before: {:?}", a).as_str())
-            );
+            if verbose {
+                println!(
+                    "{}",
+                    color!(Color::BLACK, format!("Stack before: {:?}", a).as_str())
+                );
+            }
             tokens.push(a);
         }
 
-        let out = parse(tokens, &mut local_memory);
+        let out = parse(tokens, &mut local_memory, verbose);
         if out.token_type != TokenType::NoType {
             println!(
                 "{} {}",
