@@ -15,7 +15,15 @@ pub fn parse(tokens: Vec<Token>) -> Token {
         // if it's a literal, add it to the stack
         // if it's an operation, pop values from the stack and apply the operation
         match token.token_type {
-            TokenType::NumericIntLiteral | TokenType::NumericDecLiteral | TokenType::Identifier => {
+            TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
+                stack.push(token);
+            }
+
+            TokenType::Identifier => {
+                // TODO: if it's been set before, push variable it was set to, to the stack
+
+                // TODO: otherwise throw and error
+
                 stack.push(token);
             }
 
