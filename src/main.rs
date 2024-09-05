@@ -59,10 +59,14 @@ fn interactive() {
             if verbose {
                 println!(
                     "{}",
-                    color!(Color::BLACK, format!("Stack before: {:?}", a).as_str())
+                    color!(Color::BLACK, format!("Lexing Token: {:?}", a).as_str())
                 );
             }
             tokens.push(a);
+        }
+
+        if verbose {
+            println!("{}", color!(Color::BLACK, "End of lexing"));
         }
 
         let out = parse(tokens, &mut local_memory, &mut function_memory, verbose);
