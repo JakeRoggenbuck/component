@@ -101,6 +101,11 @@ The following is a Component program to calculate the time dilation observed by 
 
 ![image](https://github.com/user-attachments/assets/47a51682-a1ce-4cb5-90f3-ab88e58dca9f)
 
+After adding C as a constant and compressing this whole program into a single expression, here is the same code minus the variable assignment.
+
+![image](https://github.com/user-attachments/assets/9b706345-9ae5-43a5-b9cc-ed7eb083c153)
+
+
 ## Error Handling
 
 Errors that occur in the interactive interpreter cause the line being interpreted to crash. When this happens, one of the following error messages will be displayed.
