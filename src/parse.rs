@@ -20,6 +20,86 @@ pub struct ParserState {
     token_index: usize,
 }
 
+fn invalid_type_cast_error(cast_to_type: String, one: Token, two: Token) {
+    println!(
+        "{} Invalid Type Cast [E3]",
+        color!(Color::RED, bold!("Error:").as_str()).as_str()
+    );
+    println!(
+        "{} {}",
+        one.value,
+        color!(Color::RED, bold!(&two.value).as_str())
+    );
+
+    println!(
+        "{}{} Cannot convert <{}> to <{}>",
+        (0..one.value.len() + 1).map(|_| " ").collect::<String>(),
+        color!(Color::RED, bold!("^^^").as_str()),
+        format!("{:?}", one.token_type),
+        cast_to_type
+    )
+}
+
+fn stack_empty_error() {
+    println!(
+        "{} Stack Empty [E4]",
+        color!(Color::RED, bold!("Error:").as_str()).as_str()
+    );
+}
+
+fn wrong_type_error_first(val_one: String, val_two: String) {
+    println!(
+        "{} Wrong Type [E2]",
+        color!(Color::RED, bold!("Error:").as_str()).as_str()
+    );
+    println!(
+        "{} {}",
+        color!(Color::RED, bold!(val_one.as_str()).as_str()),
+        val_two
+    );
+    println!(
+        "{} value is not a <NumericIntLiteral> or <NumericDecLiteral>",
+        color!(Color::RED, bold!("^").as_str())
+    );
+}
+
+fn wrong_type_error_second(val_one: String, val_two: String, val_three: String) {
+    println!(
+        "{} Wrong Type [E2]",
+        color!(Color::RED, bold!("Error:").as_str()).as_str()
+    );
+    println!(
+        "{} {} {}",
+        val_one,
+        color!(Color::RED, bold!(val_two.as_str()).as_str()),
+        val_three
+    );
+    println!(
+        "{}{}value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
+        (0..val_one.len() + 1).map(|_| " ").collect::<String>(),
+        color!(Color::RED, bold!("^").as_str()),
+    );
+}
+
+fn wrong_type_error_both(val_one: String, val_two: String, val_three: String) {
+    println!(
+        "{} Wrong Type [E2]",
+        color!(Color::RED, bold!("Error:").as_str()).as_str()
+    );
+    println!(
+        "{} {} {}",
+        color!(Color::RED, bold!(val_one.as_str()).as_str()),
+        color!(Color::RED, bold!(val_two.as_str()).as_str()),
+        val_three
+    );
+    println!(
+        "{}{}{} values are not a <NumericIntLiteral> or <NumericDecLiteral> because they did not parse correctly",
+        color!(Color::RED, bold!("^").as_str()),
+        (0..val_one.len()).map(|_| " ").collect::<String>(),
+        color!(Color::RED, bold!("^").as_str())
+    );
+}
+
 impl Parser for ParserState {
     fn variable_check_pop(&mut self) -> Option<Token> {
         let first = self.stack.pop();
@@ -85,27 +165,10 @@ impl Parser for ParserState {
                             token_type: TokenType::NumericIntLiteral,
                             value: ((a_val as f64).sqrt()).to_string(),
                         }),
-                        Err(_) => {
-                            println!(
-                                "{} Wrong Type [E2]",
-                                color!(Color::RED, bold!("Error:").as_str()).as_str()
-                            );
-                            println!(
-                                "{} {}",
-                                color!(Color::RED, bold!(a.value.as_str()).as_str()),
-                                token.value
-                            );
-                            println!(
-                                "{} value is not a <NumericIntLiteral> or <NumericDecLiteral>",
-                                color!(Color::RED, bold!("^").as_str())
-                            );
-                        }
+                        Err(_) => wrong_type_error_first(a.value, token.value),
                     }
                 } else {
-                    println!(
-                        "{} Stack Empty [E4]",
-                        color!(Color::RED, bold!("Error:").as_str()).as_str()
-                    );
+                    stack_empty_error();
                 }
             }
 
@@ -145,7 +208,7 @@ impl Parser for ParserState {
                                         (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
                                         color!(
                                             Color::RED,
-                                            bold!(&(0..a.value.len())
+                                            bold!(&(0..b.value.len())
                                                 .map(|_| "^")
                                                 .collect::<String>())
                                             .as_str()
@@ -183,45 +246,13 @@ impl Parser for ParserState {
                                     token_type: TokenType::NumericIntLiteral,
                                     value: (a_val as i64).to_string(),
                                 }),
-                                Err(_) => {
-                                    println!(
-                                        "{} Wrong Type [E2]",
-                                        color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                    );
-                                    println!(
-                                        "{} {}",
-                                        color!(Color::RED, bold!(a.value.as_str()).as_str()),
-                                        token.value
-                                    );
-                                    println!(
-                                        "{} value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
-                                        color!(Color::RED, bold!("^").as_str())
-                                    );
-                                }
+                                Err(_) => wrong_type_error_first(a.value, token.value),
                             }
                         }
 
-                        _ => {
-                            println!(
-                                "{} Invalid Type Cast [E3]",
-                                color!(Color::RED, bold!("Error:").as_str()).as_str()
-                            );
-                            println!("{} {}", a.value, token.value);
-
-                            println!(
-                                "{}{} Cannot convert <{}> to <NumericIntLiteral>",
-                                (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
-                                color!(Color::RED, bold!("^^^").as_str()),
-                                format!("{:?}", a.token_type)
-                            )
-                        }
+                        _ => invalid_type_cast_error(String::from("NumericIntLiteral"), a, token),
                     },
-                    None => {
-                        println!(
-                            "{} Stack Empty [E4]",
-                            color!(Color::RED, bold!("Error:").as_str()).as_str()
-                        );
-                    }
+                    None => stack_empty_error(),
                 }
             }
 
@@ -237,45 +268,12 @@ impl Parser for ParserState {
                                     token_type: TokenType::NumericDecLiteral,
                                     value: (a_val as f64).to_string(),
                                 }),
-                                Err(_) => {
-                                    println!(
-                                        "{} Wrong Type [E2]",
-                                        color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                    );
-                                    println!(
-                                        "{} {}",
-                                        color!(Color::RED, bold!(a.value.as_str()).as_str()),
-                                        token.value
-                                    );
-                                    println!(
-                                        "{} value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
-                                        color!(Color::RED, bold!("^").as_str())
-                                    );
-                                }
+                                Err(_) => wrong_type_error_first(a.value, token.value),
                             }
                         }
-
-                        _ => {
-                            println!(
-                                "{} Invalid Type Cast [E3]",
-                                color!(Color::RED, bold!("Error:").as_str()).as_str()
-                            );
-                            println!("{} {}", a.value, token.value);
-
-                            println!(
-                                "{}{} Cannot convert <{}> to <NumericDecLiteral>",
-                                (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
-                                color!(Color::RED, bold!("^^^").as_str()),
-                                format!("{:?}", a.token_type)
-                            )
-                        }
+                        _ => invalid_type_cast_error(String::from("NumericIntLiteral"), a, token),
                     },
-                    None => {
-                        println!(
-                            "{} Stack Empty [E4]",
-                            color!(Color::RED, bold!("Error:").as_str()).as_str()
-                        );
-                    }
+                    None => stack_empty_error(),
                 }
             }
 
@@ -380,120 +378,28 @@ impl Parser for ParserState {
                                     },
 
                                     // Give errors if values did not parse correctly
-                                    (Err(_), Ok(_)) => {
-                                        println!(
-                                            "{} Wrong Type [E2]",
-                                            color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                        );
-                                        println!(
-                                            "{} {} {}",
-                                            color!(Color::RED, bold!(a.value.as_str()).as_str()),
-                                            b.value,
-                                            token.value
-                                        );
-                                        println!(
-                                            "{} value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
-                                            color!(Color::RED, bold!("^").as_str())
-                                        );
-                                    }
+                                    (Err(_), Ok(_)) => wrong_type_error_first(b.value, token.value),
                                     (Ok(_), Err(_)) => {
-                                        println!(
-                                            "{} Wrong Type [E2]",
-                                            color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                        );
-                                        println!(
-                                            "{} {} {}",
-                                            a.value,
-                                            color!(Color::RED, bold!(b.value.as_str()).as_str()),
-                                            token.value
-                                        );
-                                        println!(
-                                            "{}{}value is not a <NumericIntLiteral> or <NumericDecLiteral> because it did not parse correctly",
-                                            (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
-                                            color!(Color::RED, bold!("^").as_str())
-                                        )
+                                        wrong_type_error_second(a.value, b.value, token.value)
                                     }
                                     (Err(_), Err(_)) => {
-                                        println!(
-                                            "{} Wrong Type [E2]",
-                                            color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                        );
-                                        println!(
-                                            "{} {} {}",
-                                            color!(Color::RED, bold!(a.value.as_str()).as_str()),
-                                            color!(Color::RED, bold!(b.value.as_str()).as_str()),
-                                            token.value
-                                        );
-                                        println!(
-                                            "{}{}{} values are not a <NumericIntLiteral> or <NumericDecLiteral> because they did not parse correctly",
-                                            color!(Color::RED, bold!("^").as_str()),
-                                            (0..a.value.len()).map(|_| " ").collect::<String>(),
-                                            color!(Color::RED, bold!("^").as_str())
-                                        );
+                                        wrong_type_error_both(a.value, b.value, token.value)
                                     }
                                 }
                             }
 
                             // Give errors if values are not NumericIntLiteral or NumericDecLiteral
                             (_, TokenType::NumericIntLiteral) => {
-                                println!(
-                                    "{} Wrong Type [E2]",
-                                    color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                );
-                                println!(
-                                    "{} {} {}",
-                                    color!(Color::RED, bold!(a.value.as_str()).as_str()),
-                                    b.value,
-                                    token.value
-                                );
-                                println!(
-                                    "{} value is not a <NumericIntLiteral> or <NumericDecLiteral>",
-                                    color!(Color::RED, bold!("^").as_str())
-                                );
+                                wrong_type_error_first(b.value, token.value)
                             }
+
                             (TokenType::NumericIntLiteral, _) => {
-                                println!(
-                                    "{} Wrong Type [E2]",
-                                    color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                );
-                                println!(
-                                    "{} {} {}",
-                                    a.value,
-                                    color!(Color::RED, bold!(b.value.as_str()).as_str()),
-                                    token.value
-                                );
-                                println!(
-                                "{}{} value is not a <NumericIntLiteral> or <NumericDecLiteral>",
-                                (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
-                                color!(Color::RED, bold!("^").as_str())
-                            );
+                                wrong_type_error_first(a.value, token.value)
                             }
-                            (_, _) => {
-                                println!(
-                                    "{} Wrong Type [E2]",
-                                    color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                );
-                                println!(
-                                    "{} {} {}",
-                                    color!(Color::RED, bold!(a.value.as_str()).as_str()),
-                                    color!(Color::RED, bold!(b.value.as_str()).as_str()),
-                                    token.value
-                                );
-                                println!(
-                                    "{}{}{} values are not a <NumericIntLiteral> or <NumericDecLiteral>",
-                                    color!(Color::RED, bold!("^").as_str()),
-                                    (0..a.value.len()).map(|_| " ").collect::<String>(),
-                                    color!(Color::RED, bold!("^").as_str())
-                                );
-                            }
+                            (_, _) => wrong_type_error_both(a.value, b.value, token.value),
                         }
                     }
-                    _ => {
-                        println!(
-                            "{} Stack Empty [E4]",
-                            color!(Color::RED, bold!("Error:").as_str()).as_str()
-                        );
-                    }
+                    _ => stack_empty_error(),
                 }
             }
 

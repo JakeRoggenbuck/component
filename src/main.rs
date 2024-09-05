@@ -7,7 +7,7 @@ pub mod lexer;
 pub mod parse;
 
 fn interactive() {
-    let verbose = true;
+    let verbose = false;
     let mut p = create_parser(verbose);
 
     loop {
