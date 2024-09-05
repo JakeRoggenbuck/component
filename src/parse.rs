@@ -55,6 +55,18 @@ impl Parser for ParserState {
                 self.stack.push(token);
             }
 
+            TokenType::BoolLiteral => match token.value.as_str() {
+                "true" => self.stack.push(Token {
+                    token_type: TokenType::BoolLiteral,
+                    value: "1".to_string(),
+                }),
+                "false" => self.stack.push(Token {
+                    token_type: TokenType::BoolLiteral,
+                    value: "0".to_string(),
+                }),
+                _ => {}
+            },
+
             TokenType::Identifier => {
                 let var = self.local_memory.get(&token.value);
                 let func = self.function_memory.get(&token.value);
@@ -196,6 +208,27 @@ impl Parser for ParserState {
                             }
                         }
                         _ => invalid_type_cast_error(String::from("NumericIntLiteral"), a, token),
+                    },
+                    None => stack_empty_error(),
+                }
+            }
+
+            TokenType::TypeBoolKeyword => {
+                let first = self.variable_check_pop();
+
+                match first {
+                    Some(a) => match a.token_type {
+                        TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
+                            let a_float_res = a.value.parse::<f64>();
+                            match a_float_res {
+                                Ok(a_val) => self.stack.push(Token {
+                                    token_type: TokenType::BoolLiteral,
+                                    value: (a_val != 0.0).to_string(),
+                                }),
+                                Err(_) => wrong_type_error_first(a.value, token.value),
+                            }
+                        }
+                        _ => invalid_type_cast_error(String::from("BoolLiteral"), a, token),
                     },
                     None => stack_empty_error(),
                 }

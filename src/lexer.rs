@@ -60,6 +60,8 @@ pub enum TokenType {
     // NOT: .3, 54
     NumericDecLiteral = 2,
 
+    BoolLiteral,
+
     LeftBrace,
     RightBrace,
     LeftBracket,
@@ -108,6 +110,7 @@ pub enum TokenType {
     TypeImaginaryKeyword,
     TypeSizeKeyword,
     TypeSqrtKeyword,
+    TypeBoolKeyword,
 
     Function,
 
@@ -129,7 +132,10 @@ fn is_type(maybe_type: &str) -> TokenType {
         "imaginary" => TokenType::TypeImaginaryKeyword,
         "size" => TokenType::TypeSizeKeyword,
         "sqrt" => TokenType::TypeSqrtKeyword,
+        "bool" => TokenType::TypeBoolKeyword,
         "fn" => TokenType::Function,
+        "true" => TokenType::BoolLiteral,
+        "false" => TokenType::BoolLiteral,
 
         // Other types
         // "literal" | "type" | "option" | "string" => true,
