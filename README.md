@@ -22,6 +22,9 @@ Note that the symbol `>` is used in code example to show that these expressions 
 ## Constants
 - `e` Euler's number
 
+## Built-in Functions
+- `sqrt` Square root
+
 ## Basic Math Operations
 Add two numbers together.
 
