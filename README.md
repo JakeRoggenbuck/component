@@ -74,7 +74,7 @@ Variables are statically typed in Component. Here is an example usage of a varia
 Create an addition function called `foo`.
 
 ```
-> x y + func foo
+> x y + foo func
 
 > 1 2 foo
 -> 3
@@ -100,6 +100,11 @@ Create an addition function called `foo`.
 The following is a Component program to calculate the time dilation observed by an object moving at 300 m/s for 25 seconds.
 
 ![image](https://github.com/user-attachments/assets/47a51682-a1ce-4cb5-90f3-ab88e58dca9f)
+
+After adding C as a constant and compressing this whole program into a single expression, here is the same code minus the variable assignment.
+
+![image](https://github.com/user-attachments/assets/9b706345-9ae5-43a5-b9cc-ed7eb083c153)
+
 
 ## Error Handling
 
