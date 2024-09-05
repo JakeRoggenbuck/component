@@ -31,7 +31,7 @@ This also works with `-` for subtraction, `*` for multiplication, and `/` for di
 -> 4 -8 4
 ```
 
-## Variables (Coming Soon)
+## Variables
 
 Assign the value 2 to variable `a`.
 
@@ -45,6 +45,8 @@ Use the variable `a`.
 a 4 *
 -> 8
 ```
+
+![image](https://github.com/user-attachments/assets/f20443c1-3a83-4336-9b01-2309e2bc0af9)
 
 ## Function (Coming Soon)
 Create an addition function called `foo`.
