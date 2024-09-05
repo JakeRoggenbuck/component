@@ -81,7 +81,7 @@ pub fn parse(
                                     stack.push(out);
                                 } else {
                                     println!(
-                                        "{} Assignment Type Mismatch",
+                                        "{} Assignment Type Mismatch [E1]",
                                         color!(Color::RED, bold!("Error:").as_str()).as_str()
                                     );
                                     println!(
@@ -135,7 +135,7 @@ pub fn parse(
                                 }),
                                 Err(_) => {
                                     println!(
-                                        "{} Wrong type",
+                                        "{} Wrong Type [E2]",
                                         color!(Color::RED, bold!("Error:").as_str()).as_str()
                                     );
                                     println!(
@@ -153,7 +153,7 @@ pub fn parse(
 
                         _ => {
                             println!(
-                                "{} Invalid type cast",
+                                "{} Invalid Type Cast [E3]",
                                 color!(Color::RED, bold!("Error:").as_str()).as_str()
                             );
                             println!("{} {}", a.value, token.value);
@@ -168,7 +168,7 @@ pub fn parse(
                     },
                     None => {
                         println!(
-                            "{} Not enough values on the stack",
+                            "{} Stack Empty [E4]",
                             color!(Color::RED, bold!("Error:").as_str()).as_str()
                         );
                     }
@@ -189,7 +189,7 @@ pub fn parse(
                                 }),
                                 Err(_) => {
                                     println!(
-                                        "{} Wrong type",
+                                        "{} Wrong Type [E2]",
                                         color!(Color::RED, bold!("Error:").as_str()).as_str()
                                     );
                                     println!(
@@ -207,7 +207,7 @@ pub fn parse(
 
                         _ => {
                             println!(
-                                "{} Invalid type cast",
+                                "{} Invalid Type Cast [E3]",
                                 color!(Color::RED, bold!("Error:").as_str()).as_str()
                             );
                             println!("{} {}", a.value, token.value);
@@ -222,7 +222,7 @@ pub fn parse(
                     },
                     None => {
                         println!(
-                            "{} Not enough values on the stack",
+                            "{} Stack Empty [E4]",
                             color!(Color::RED, bold!("Error:").as_str()).as_str()
                         );
                     }
@@ -319,7 +319,7 @@ pub fn parse(
                                     // Give errors if values did not parse correctly
                                     (Err(_), Ok(_)) => {
                                         println!(
-                                            "{} Wrong type",
+                                            "{} Wrong Type [E2]",
                                             color!(Color::RED, bold!("Error:").as_str()).as_str()
                                         );
                                         println!(
@@ -335,7 +335,7 @@ pub fn parse(
                                     }
                                     (Ok(_), Err(_)) => {
                                         println!(
-                                            "{} Wrong type",
+                                            "{} Wrong Type [E2]",
                                             color!(Color::RED, bold!("Error:").as_str()).as_str()
                                         );
                                         println!(
@@ -352,7 +352,7 @@ pub fn parse(
                                     }
                                     (Err(_), Err(_)) => {
                                         println!(
-                                            "{} Wrong type",
+                                            "{} Wrong Type [E2]",
                                             color!(Color::RED, bold!("Error:").as_str()).as_str()
                                         );
                                         println!(
@@ -374,7 +374,7 @@ pub fn parse(
                             // Give errors if values are not NumericIntLiteral or NumericDecLiteral
                             (_, TokenType::NumericIntLiteral) => {
                                 println!(
-                                    "{} Wrong type",
+                                    "{} Wrong Type [E2]",
                                     color!(Color::RED, bold!("Error:").as_str()).as_str()
                                 );
                                 println!(
@@ -390,7 +390,7 @@ pub fn parse(
                             }
                             (TokenType::NumericIntLiteral, _) => {
                                 println!(
-                                    "{} Wrong type",
+                                    "{} Wrong Type [E2]",
                                     color!(Color::RED, bold!("Error:").as_str()).as_str()
                                 );
                                 println!(
@@ -407,7 +407,7 @@ pub fn parse(
                             }
                             (_, _) => {
                                 println!(
-                                    "{} Wrong type",
+                                    "{} Wrong Type [E2]",
                                     color!(Color::RED, bold!("Error:").as_str()).as_str()
                                 );
                                 println!(
@@ -427,7 +427,7 @@ pub fn parse(
                     }
                     _ => {
                         println!(
-                            "{} Not enough values on the stack",
+                            "{} Stack Empty [E4]",
                             color!(Color::RED, bold!("Error:").as_str()).as_str()
                         );
                     }
@@ -436,7 +436,7 @@ pub fn parse(
 
             _ => {
                 println!(
-                    "{} Operation not implemented",
+                    "{} Operation Not Implemented [E5]",
                     color!(Color::RED, bold!("Error:").as_str()).as_str()
                 );
             }
