@@ -464,6 +464,16 @@ mod tests {
 
     #[test]
     fn parse_test() {
+        let mut local_memory = HashMap::new();
+
+        local_memory.insert(
+            "e".to_string(),
+            Token {
+                token_type: TokenType::NumericDecLiteral,
+                value: std::f64::consts::E.to_string(),
+            },
+        );
+
         let input1 = vec![
             Token {
                 token_type: TokenType::NumericIntLiteral,
@@ -479,7 +489,7 @@ mod tests {
             },
         ];
 
-        let out1 = parse(input1);
+        let out1 = parse(input1, &mut local_memory);
 
         assert_eq!(
             out1,
@@ -504,7 +514,7 @@ mod tests {
             },
         ];
 
-        let out2 = parse(input2);
+        let out2 = parse(input2, &mut local_memory);
 
         assert_eq!(
             out2,
@@ -537,7 +547,7 @@ mod tests {
             },
         ];
 
-        let out3 = parse(input3);
+        let out3 = parse(input3, &mut local_memory);
 
         assert_eq!(
             out3,
