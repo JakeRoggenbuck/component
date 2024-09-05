@@ -374,7 +374,6 @@ impl Parser for ParserState {
                     "{}",
                     color!(Color::BLACK, format!("Stack: {:?}", self.stack).as_str())
                 );
-
                 println!(
                     "{}",
                     color!(
