@@ -8,7 +8,7 @@ pub mod lexer;
 pub mod parse;
 
 fn interactive() {
-    let verbose = true;
+    let verbose = false;
 
     let mut local_memory = HashMap::new();
 
@@ -17,6 +17,22 @@ fn interactive() {
         Token {
             token_type: TokenType::NumericDecLiteral,
             value: std::f64::consts::E.to_string(),
+        },
+    );
+
+    local_memory.insert(
+        "pi".to_string(),
+        Token {
+            token_type: TokenType::NumericDecLiteral,
+            value: std::f64::consts::PI.to_string(),
+        },
+    );
+
+    local_memory.insert(
+        "C".to_string(),
+        Token {
+            token_type: TokenType::NumericIntLiteral,
+            value: "299792458".to_string(),
         },
     );
 
