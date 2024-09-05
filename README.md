@@ -95,6 +95,12 @@ Create an addition function called `foo`.
 -> 1
 ```
 
+## Component in actoin
+
+The following is a Component program to calculate the time dilation observed by an object moving at 300 m/s for 25 seconds.
+
+![image](https://github.com/user-attachments/assets/47a51682-a1ce-4cb5-90f3-ab88e58dca9f)
+
 ## Error Handling
 
 Errors that occur in the interactive interpreter cause the line being interpreted to crash. When this happens, one of the following error messages will be displayed.
