@@ -21,6 +21,8 @@ Note that the symbol `>` is used in code example to show that these expressions 
 
 ## Constants
 - `e` Euler's number
+- `pi` Pi
+- `C` Speed of light in m/s
 
 ## Built-in Functions
 - `sqrt` Square root
