@@ -105,6 +105,9 @@ After adding C as a constant and compressing this whole program into a single ex
 
 ![image](https://github.com/user-attachments/assets/9b706345-9ae5-43a5-b9cc-ed7eb083c153)
 
+Here I created a function called `s` that computes the same equation.
+
+![image](https://github.com/user-attachments/assets/a89c1203-773f-461d-b169-ac1d65882617)
 
 ## Error Handling
 
