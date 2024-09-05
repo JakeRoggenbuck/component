@@ -1,12 +1,23 @@
 use crate::lexer::{Lex, Lexer, Token, TokenType};
 use efcl::{bold, color, Color};
 use parse::parse;
+use std::collections::HashMap;
 use std::io::{stdin, stdout, Write};
 
 pub mod lexer;
 pub mod parse;
 
 fn interactive() {
+    let mut local_memory = HashMap::new();
+
+    local_memory.insert(
+        "e".to_string(),
+        Token {
+            token_type: TokenType::NumericDecLiteral,
+            value: std::f64::consts::E.to_string(),
+        },
+    );
+
     loop {
         print!("{}", color!(Color::GREEN, bold!("\n> ").as_str()));
         stdout().flush().expect("Failed to flush stdout");
@@ -33,7 +44,7 @@ fn interactive() {
             tokens.push(a);
         }
 
-        let out = parse(tokens);
+        let out = parse(tokens, &mut local_memory);
         if out.token_type != TokenType::NoType {
             println!(
                 "{} {}",

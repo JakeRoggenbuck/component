@@ -36,7 +36,7 @@ This also works with `-` for subtraction, `*` for multiplication, and `/` for di
 Assign the value 2 to variable `a`.
 
 ```
-> a 2 =
+> 2 a =
 -> 2
 ```
 

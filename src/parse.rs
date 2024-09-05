@@ -1,7 +1,28 @@
 use super::lexer::{Token, TokenType};
 use efcl::{bold, color, Color};
+use std::collections::HashMap;
 
-pub fn parse(tokens: Vec<Token>) -> Token {
+fn variable_check_pop(
+    stack: &mut Vec<Token>,
+    local_memory: &mut HashMap<String, Token>,
+) -> Option<Token> {
+    let first = stack.pop();
+
+    if let Some(ref a) = first {
+        match local_memory.get(&a.value) {
+            Some(tok) => {
+                return Some(tok.clone());
+            }
+            None => {
+                return first;
+            }
+        }
+    }
+
+    return first;
+}
+
+pub fn parse(tokens: Vec<Token>, local_memory: &mut HashMap<String, Token>) -> Token {
     let mut stack: Vec<Token> = vec![];
 
     println!(
@@ -19,16 +40,86 @@ pub fn parse(tokens: Vec<Token>) -> Token {
                 stack.push(token);
             }
 
-            TokenType::Identifier => {
-                // TODO: if it's been set before, push variable it was set to, to the stack
+            TokenType::Identifier => match local_memory.get(&token.value) {
+                // Push the value the variable is associated with
+                Some(tok) => {
+                    if stack.len() == 0 {
+                        stack.push(tok.clone())
+                    } else {
+                        stack.push(token);
+                    }
+                }
+                // Push the token of type Identifier as an Identifier to the stack
+                None => stack.push(token),
+            },
 
-                // TODO: otherwise throw and error
+            // Create variables
+            TokenType::Assignment => {
+                // Use raw stack.pop here
+                let second = stack.pop();
+                let first = stack.pop();
 
-                stack.push(token);
+                match (first, second) {
+                    (Some(a), Some(b)) => {
+                        // Does the variable already exist?
+
+                        match local_memory.get(&b.value) {
+                            Some(tok) => {
+                                // Assigning to the same type as the existing variable
+                                if tok.token_type == b.token_type {
+                                    // Write variable to memory
+                                    local_memory.insert(
+                                        b.value,
+                                        Token {
+                                            token_type: a.token_type,
+                                            value: a.value,
+                                        },
+                                    );
+                                } else {
+                                    println!(
+                                        "{} Assignment Type Mismatch",
+                                        color!(Color::RED, bold!("Error:").as_str()).as_str()
+                                    );
+                                    println!(
+                                        "{} {} {}",
+                                        a.value,
+                                        color!(Color::RED, bold!(b.value.as_str()).as_str()),
+                                        token.value
+                                    );
+                                    println!(
+                                        "{}{} cannot assign value {} of type <{:?}> to a variable of type <{:?}>",
+                                        (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
+                                        color!(
+                                            Color::RED,
+                                            bold!(&(0..a.value.len())
+                                                .map(|_| "^")
+                                                .collect::<String>())
+                                            .as_str()
+                                        ),
+                                        a.value,
+                                        a.token_type,
+                                        tok.token_type,
+                                    );
+                                }
+                            }
+                            None => {
+                                // Write variable to memory
+                                local_memory.insert(
+                                    b.value,
+                                    Token {
+                                        token_type: a.token_type,
+                                        value: a.value,
+                                    },
+                                );
+                            }
+                        }
+                    }
+                    _ => {}
+                }
             }
 
             TokenType::TypeIntKeyword => {
-                let first = stack.pop();
+                let first = variable_check_pop(&mut stack, local_memory);
 
                 match first {
                     Some(a) => match a.token_type {
@@ -82,7 +173,7 @@ pub fn parse(tokens: Vec<Token>) -> Token {
             }
 
             TokenType::TypeDecKeyword => {
-                let first = stack.pop();
+                let first = variable_check_pop(&mut stack, local_memory);
 
                 match first {
                     Some(a) => match a.token_type {
@@ -140,8 +231,8 @@ pub fn parse(tokens: Vec<Token>) -> Token {
             | TokenType::Multiplication
             | TokenType::Subtraction
             | TokenType::Division => {
-                let second = stack.pop();
-                let first = stack.pop();
+                let second = variable_check_pop(&mut stack, local_memory);
+                let first = variable_check_pop(&mut stack, local_memory);
 
                 // Check that both items poped from the stack actually exist
                 // i.e. there are enough items on the stack
