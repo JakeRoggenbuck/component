@@ -74,7 +74,7 @@ Variables are statically typed in Component. Here is an example usage of a varia
 Create an addition function called `foo`.
 
 ```
-> x y + func foo
+> x y + foo func
 
 > 1 2 foo
 -> 3
