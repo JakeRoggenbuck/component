@@ -80,7 +80,7 @@ Create an addition function called `foo`. Note that to start a function you do i
 -> 3
 ```
 
-Here is the example of caluclating the speed dilation of an object at velocity `v` in m/s for time `t` in seconds. More info about this in the section [#Component-in-action](#component-in-actoin)
+Here is the example of caluclating the speed dilation of an object at velocity `v` in m/s for time `t` in seconds. More info about this in the section [#Component-in-action](#component-in-action)
 
 ```
 > t 1 v 2 ^ C 2 ^ / - sqrt / s fn
