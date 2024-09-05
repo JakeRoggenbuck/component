@@ -46,6 +46,8 @@ a 4 *
 -> 8
 ```
 
+Variables are statically typed in Component. Here is an example usage of a variable.
+
 ![image](https://github.com/user-attachments/assets/f20443c1-3a83-4336-9b01-2309e2bc0af9)
 
 ## Function (Coming Soon)
