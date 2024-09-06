@@ -66,6 +66,16 @@ a 4 *
 -> 8
 ```
 
+## Conditional Assignment
+
+This will conditionally assign `5` to `b` if `a` is true.
+
+```
+> true a =
+
+> 5 b a ?
+```
+
 Variables are statically typed in Component. Here is an example usage of a variable.
 
 ![image](https://github.com/user-attachments/assets/f20443c1-3a83-4336-9b01-2309e2bc0af9)

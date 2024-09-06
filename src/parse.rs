@@ -10,6 +10,8 @@ pub trait Parser {
     fn variable_check_pop(&mut self) -> Option<Token>;
     fn match_token_type(&mut self, token: Token);
     fn parse(&mut self, tokens: Vec<Token>) -> Token;
+    fn assign_value(&mut self, first: Option<Token>, second: Option<Token>, token: Token);
+    fn convert_to_bool(&mut self, first: Option<Token>, token: Token);
 }
 
 #[derive(Debug)]
@@ -25,6 +27,84 @@ pub struct ParserState {
 }
 
 impl Parser for ParserState {
+    fn convert_to_bool(&mut self, first: Option<Token>, token: Token) {
+        match first {
+            Some(a) => match a.token_type {
+                TokenType::NumericIntLiteral
+                | TokenType::NumericDecLiteral
+                | TokenType::BoolLiteral => {
+                    let a_float_res = a.value.parse::<f64>();
+                    match a_float_res {
+                        Ok(a_val) => self.stack.push(Token {
+                            token_type: TokenType::BoolLiteral,
+                            value: ((a_val != 0.0) as i32).to_string(),
+                        }),
+                        Err(_) => wrong_type_error_first(a.value, token.value),
+                    }
+                }
+                _ => invalid_type_cast_error(String::from("BoolLiteral"), a, token),
+            },
+            None => stack_empty_error(),
+        }
+    }
+
+    fn assign_value(&mut self, first: Option<Token>, second: Option<Token>, token: Token) {
+        match (first, second) {
+            (Some(a), Some(b)) => {
+                // Does the variable already exist?
+                match self.local_memory.get(&b.value) {
+                    Some(tok) => {
+                        // Assigning to the same type as the existing variable
+                        if tok.token_type == a.token_type {
+                            // Write variable to memory
+                            let out = Token {
+                                token_type: a.token_type,
+                                value: a.value,
+                            };
+                            self.local_memory.insert(b.value, out.clone());
+                            self.stack.push(out);
+                        } else {
+                            println!(
+                                "{} Assignment Type Mismatch [E1]",
+                                color!(Color::RED, bold!("Error:").as_str()).as_str()
+                            );
+                            println!(
+                                "{} {} {}",
+                                a.value,
+                                color!(Color::RED, bold!(b.value.as_str()).as_str()),
+                                token.value
+                            );
+                            println!(
+                                "{}{} cannot assign value {} of type <{:?}> to a variable of type <{:?}>",
+                                (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
+                                color!(
+                                    Color::RED,
+                                    bold!(&(0..b.value.len())
+                                        .map(|_| "^")
+                                        .collect::<String>())
+                                    .as_str()
+                                ),
+                                a.value,
+                                a.token_type,
+                                tok.token_type,
+                            );
+                        }
+                    }
+                    None => {
+                        // Write variable to memory
+                        let out = Token {
+                            token_type: a.token_type,
+                            value: a.value,
+                        };
+                        self.local_memory.insert(b.value, out.clone());
+                        self.stack.push(out);
+                    }
+                }
+            }
+            _ => {}
+        }
+    }
+
     fn variable_check_pop(&mut self) -> Option<Token> {
         let first = self.stack.pop();
 
@@ -66,6 +146,45 @@ impl Parser for ParserState {
                 }),
                 _ => {}
             },
+
+            TokenType::Bang => {
+                let first = self.variable_check_pop();
+
+                self.convert_to_bool(first, token);
+                let second = self.variable_check_pop();
+
+                match second {
+                    Some(b) => {
+                        let a_float = b
+                            .value
+                            .parse::<f64>()
+                            .expect("Bool should always be readable here");
+
+                        self.stack.push(Token {
+                            token_type: TokenType::BoolLiteral,
+                            value: (a_float == 0.0).to_string(),
+                        });
+                    }
+                    None => stack_empty_error(),
+                }
+            }
+
+            TokenType::Question => {
+                let three = self.variable_check_pop();
+                let two = self.variable_check_pop();
+                let one = self.variable_check_pop();
+
+                match three {
+                    Some(a) => {
+                        if a.value == "1" {
+                            self.assign_value(one, two, token)
+                        } else {
+                            // Don't assign
+                        }
+                    }
+                    None => stack_empty_error(),
+                }
+            }
 
             TokenType::Identifier => {
                 let var = self.local_memory.get(&token.value);
@@ -114,60 +233,7 @@ impl Parser for ParserState {
                 let second = self.stack.pop();
                 let first = self.stack.pop();
 
-                match (first, second) {
-                    (Some(a), Some(b)) => {
-                        // Does the variable already exist?
-                        match self.local_memory.get(&b.value) {
-                            Some(tok) => {
-                                // Assigning to the same type as the existing variable
-                                if tok.token_type == a.token_type {
-                                    // Write variable to memory
-                                    let out = Token {
-                                        token_type: a.token_type,
-                                        value: a.value,
-                                    };
-                                    self.local_memory.insert(b.value, out.clone());
-                                    self.stack.push(out);
-                                } else {
-                                    println!(
-                                        "{} Assignment Type Mismatch [E1]",
-                                        color!(Color::RED, bold!("Error:").as_str()).as_str()
-                                    );
-                                    println!(
-                                        "{} {} {}",
-                                        a.value,
-                                        color!(Color::RED, bold!(b.value.as_str()).as_str()),
-                                        token.value
-                                    );
-                                    println!(
-                                        "{}{} cannot assign value {} of type <{:?}> to a variable of type <{:?}>",
-                                        (0..a.value.len() + 1).map(|_| " ").collect::<String>(),
-                                        color!(
-                                            Color::RED,
-                                            bold!(&(0..b.value.len())
-                                                .map(|_| "^")
-                                                .collect::<String>())
-                                            .as_str()
-                                        ),
-                                        a.value,
-                                        a.token_type,
-                                        tok.token_type,
-                                    );
-                                }
-                            }
-                            None => {
-                                // Write variable to memory
-                                let out = Token {
-                                    token_type: a.token_type,
-                                    value: a.value,
-                                };
-                                self.local_memory.insert(b.value, out.clone());
-                                self.stack.push(out);
-                            }
-                        }
-                    }
-                    _ => {}
-                }
+                self.assign_value(first, second, token);
             }
 
             TokenType::TypeIntKeyword => {
@@ -175,7 +241,9 @@ impl Parser for ParserState {
 
                 match first {
                     Some(a) => match a.token_type {
-                        TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
+                        TokenType::NumericIntLiteral
+                        | TokenType::NumericDecLiteral
+                        | TokenType::BoolLiteral => {
                             let a_float_res = a.value.parse::<f64>();
                             match a_float_res {
                                 Ok(a_val) => self.stack.push(Token {
@@ -197,7 +265,9 @@ impl Parser for ParserState {
 
                 match first {
                     Some(a) => match a.token_type {
-                        TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
+                        TokenType::NumericIntLiteral
+                        | TokenType::NumericDecLiteral
+                        | TokenType::BoolLiteral => {
                             let a_float_res = a.value.parse::<f64>();
                             match a_float_res {
                                 Ok(a_val) => self.stack.push(Token {
@@ -216,22 +286,7 @@ impl Parser for ParserState {
             TokenType::TypeBoolKeyword => {
                 let first = self.variable_check_pop();
 
-                match first {
-                    Some(a) => match a.token_type {
-                        TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
-                            let a_float_res = a.value.parse::<f64>();
-                            match a_float_res {
-                                Ok(a_val) => self.stack.push(Token {
-                                    token_type: TokenType::BoolLiteral,
-                                    value: ((a_val != 0.0) as i32).to_string(),
-                                }),
-                                Err(_) => wrong_type_error_first(a.value, token.value),
-                            }
-                        }
-                        _ => invalid_type_cast_error(String::from("BoolLiteral"), a, token),
-                    },
-                    None => stack_empty_error(),
-                }
+                self.convert_to_bool(first, token);
             }
 
             // Simple two argument operations/functions
