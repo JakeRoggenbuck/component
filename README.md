@@ -18,11 +18,14 @@ Note that the symbol `>` is used in code example to show that these expressions 
 
 - `int` converts types into NumericIntLiteral if possible
 - `dec` converts types into NumericDecLiteral if possible
+- `bool` converts types into BoolLiteral if possible
 
 ## Constants
 - `e` Euler's number
 - `pi` Pi
 - `C` Speed of light in m/s
+- `true` Boolean true
+- `false` Boolean false
 
 ## Built-in Functions
 - `sqrt` Square root
@@ -33,6 +36,8 @@ Note that the symbol `>` is used in code example to show that these expressions 
 - `*` multiplication
 - `/` division
 - `^` exponentiation
+- `!` logical not
+- `?` conditional assignment
 
 ## Basic Math Operations
 Add two numbers together.
