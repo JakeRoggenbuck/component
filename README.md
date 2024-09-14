@@ -2,6 +2,10 @@
 ![Component Logo](./images/Component_light_mode.png#gh-light-mode-only)
 <br>
 A math language using postfix notation.
+<br>
+<br>
+[![Rust](https://img.shields.io/github/actions/workflow/status/jakeroggenbuck/component/rust.yml?branch=main&style=for-the-badge)](https://github.com/JakeRoggenbuck/component/actions)
+![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/jakeroggenbuck/component?style=for-the-badge)
 
 ## About
 
