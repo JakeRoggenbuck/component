@@ -1,7 +1,7 @@
 ![Component Logo](./images/Component_dark_mode.png#gh-dark-mode-only)
 ![Component Logo](./images/Component_light_mode.png#gh-light-mode-only)
 <br>
-A math language using postfix notation.
+A programming language for math using postfix notation.
 <br>
 <br>
 [![Rust](https://img.shields.io/github/actions/workflow/status/jakeroggenbuck/component/rust.yml?branch=main&style=for-the-badge)](https://github.com/JakeRoggenbuck/component/actions)
