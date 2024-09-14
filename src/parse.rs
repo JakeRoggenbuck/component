@@ -12,6 +12,11 @@ pub trait Parser {
     fn parse(&mut self, tokens: Vec<Token>) -> Token;
     fn assign_value(&mut self, first: Option<Token>, second: Option<Token>, token: Token);
     fn convert_to_bool(&mut self, first: Option<Token>, token: Token);
+    fn asm_li(&mut self, token: Token);
+    fn asm_add(&mut self);
+    fn asm_sub(&mut self);
+    fn output_asm(&mut self) -> Vec<String>;
+    fn reset_asm(&mut self);
 }
 
 #[derive(Debug)]
@@ -24,9 +29,20 @@ pub struct ParserState {
     function_stack: Vec<Token>,
     function_memory: HashMap<String, Vec<Token>>,
     token_index: usize,
+    assembly: Vec<String>,
+    temp_reg_index: i8,
 }
 
 impl Parser for ParserState {
+    fn output_asm(&mut self) -> Vec<String> {
+        return self.assembly.clone();
+    }
+
+    fn reset_asm(&mut self) {
+        self.assembly = vec![];
+        self.temp_reg_index = 0;
+    }
+
     fn convert_to_bool(&mut self, first: Option<Token>, token: Token) {
         match first {
             Some(a) => match a.token_type {
@@ -122,6 +138,32 @@ impl Parser for ParserState {
         return first;
     }
 
+    fn asm_li(&mut self, token: Token) {
+        self.assembly
+            .push(format!("li t{} {}", self.temp_reg_index, token.value));
+        self.temp_reg_index += 1;
+    }
+
+    fn asm_add(&mut self) {
+        self.assembly.push(format!(
+            "add t{} t{} t{}",
+            self.temp_reg_index - 2,
+            self.temp_reg_index - 2,
+            self.temp_reg_index - 1
+        ));
+        self.temp_reg_index -= 1;
+    }
+
+    fn asm_sub(&mut self) {
+        self.assembly.push(format!(
+            "sub t{} t{} t{}",
+            self.temp_reg_index - 2,
+            self.temp_reg_index - 2,
+            self.temp_reg_index - 1
+        ));
+        self.temp_reg_index -= 1;
+    }
+
     fn match_token_type(&mut self, token: Token) {
         // Match the type of token
         // if it's a literal, add it to the stack
@@ -131,7 +173,12 @@ impl Parser for ParserState {
                 self.function_mode = true;
             }
 
-            TokenType::NumericIntLiteral | TokenType::NumericDecLiteral => {
+            TokenType::NumericIntLiteral => {
+                self.asm_li(token.clone());
+                self.stack.push(token);
+            }
+
+            TokenType::NumericDecLiteral => {
                 self.stack.push(token);
             }
 
@@ -334,7 +381,8 @@ impl Parser for ParserState {
                                             self.stack.push(Token {
                                                 token_type: t_type,
                                                 value: v.to_string(),
-                                            })
+                                            });
+                                            self.asm_add();
                                         }
                                         TokenType::Multiplication => {
                                             let v = a_float * b_float;
@@ -359,6 +407,7 @@ impl Parser for ParserState {
                                                 token_type: t_type,
                                                 value: v.to_string(),
                                             });
+                                            self.asm_sub();
                                         }
                                         TokenType::Division => {
                                             let v = a_float / b_float;
@@ -436,6 +485,8 @@ impl Parser for ParserState {
     }
 
     fn parse(&mut self, tokens: Vec<Token>) -> Token {
+        self.reset_asm();
+
         if self.verbose {
             println!(
                 "{}",
@@ -598,6 +649,8 @@ pub fn create_parser(verbose: bool) -> ParserState {
         token_stack: Vec::<Token>::new(),
         function_stack: Vec::<Token>::new(),
         token_index: 0,
+        assembly: Vec::<String>::new(),
+        temp_reg_index: 0,
     }
 }
 

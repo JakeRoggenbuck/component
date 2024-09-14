@@ -17,6 +17,9 @@ struct Opt {
     verbose: bool,
 
     #[structopt(short, long)]
+    asm: bool,
+
+    #[structopt(short, long)]
     filename: Option<String>,
 }
 
@@ -75,7 +78,7 @@ fn run_file(filename: String, verbose: bool) {
     }
 }
 
-fn interactive(verbose: bool) {
+fn interactive(verbose: bool, asm: bool) {
     let mut p = create_parser(verbose);
 
     loop {
@@ -112,6 +115,12 @@ fn interactive(verbose: bool) {
 
         let out = p.parse(tokens);
 
+        if asm {
+            for x in p.output_asm() {
+                println!("{}", color!(Color::BLACK, x.as_str()));
+            }
+        }
+
         if out.token_type != TokenType::NoType {
             println!(
                 "{} {}",
@@ -128,6 +137,6 @@ fn main() {
     if let Some(filename) = opt.filename {
         run_file(filename, opt.verbose);
     } else {
-        interactive(opt.verbose);
+        interactive(opt.verbose, opt.asm);
     }
 }
