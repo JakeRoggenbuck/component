@@ -135,6 +135,12 @@ Here I created a function called `s` that computes the same equation.
 
 ![image](https://github.com/user-attachments/assets/a89c1203-773f-461d-b169-ac1d65882617)
 
+## Convert to Assembly
+
+Currently the interpreter creates x86-64 or RISC-V assembly as the code is being evaluated. In the future, an output file can be specified and the assembly will be put into that file and assembled.
+
+![image](https://github.com/user-attachments/assets/4bd224e4-45bf-48f4-8a83-fe0db297ceeb)
+
 ## Error Handling
 
 Errors that occur in the interactive interpreter cause the line being interpreted to crash. When this happens, one of the following error messages will be displayed.
