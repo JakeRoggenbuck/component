@@ -135,6 +135,8 @@ Here I created a function called `s` that computes the same equation.
 
 ![image](https://github.com/user-attachments/assets/a89c1203-773f-461d-b169-ac1d65882617)
 
+A test file with the same functionality can be found here: [space](https://github.com/JakeRoggenbuck/component/blob/main/testfiles/space).
+
 ## Convert to Assembly
 
 Currently the interpreter creates x86-64 or RISC-V assembly as the code is being evaluated. In the future, an output file can be specified and the assembly will be put into that file and assembled.
