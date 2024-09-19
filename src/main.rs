@@ -1,6 +1,6 @@
 use crate::lexer::{Lex, Lexer, Token, TokenType};
 use efcl::{bold, color, Color};
-use parse::{create_parser, Parser};
+use parse::{create_parser, AssemblyArchitecture, Parser};
 use std::fs::File;
 use std::io::{prelude::*, BufReader};
 use std::io::{stdin, stdout, Write};
@@ -17,7 +17,7 @@ struct Opt {
     verbose: bool,
 
     #[structopt(short, long)]
-    asm: bool,
+    asm: Option<String>,
 
     #[structopt(short, long)]
     filename: Option<String>,
@@ -78,8 +78,12 @@ fn run_file(filename: String, verbose: bool) {
     }
 }
 
-fn interactive(verbose: bool, asm: bool) {
+fn interactive(verbose: bool, asm: Option<AssemblyArchitecture>) {
     let mut p = create_parser(verbose);
+
+    if let Some(a) = asm {
+        p.set_asm_arch(a);
+    }
 
     loop {
         print!("{}", color!(Color::GREEN, bold!("\n> ").as_str()));
@@ -115,7 +119,7 @@ fn interactive(verbose: bool, asm: bool) {
 
         let out = p.parse(tokens);
 
-        if asm {
+        if asm.is_some() {
             for x in p.output_asm() {
                 println!("{}", color!(Color::BLACK, x.as_str()));
             }
@@ -137,6 +141,13 @@ fn main() {
     if let Some(filename) = opt.filename {
         run_file(filename, opt.verbose);
     } else {
-        interactive(opt.verbose, opt.asm);
+        let mut asm = None;
+        if opt.asm == Some("x86".to_string()) || opt.asm == Some("x86-64".to_string()) {
+            asm = Some(AssemblyArchitecture::X86_64);
+        } else if opt.asm == Some("RISCV".to_string()) || opt.asm == Some("RISC-V".to_string()) {
+            asm = Some(AssemblyArchitecture::RISCV);
+        }
+
+        interactive(opt.verbose, asm);
     }
 }

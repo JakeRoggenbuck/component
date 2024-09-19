@@ -6,6 +6,12 @@ use super::lexer::{Token, TokenType};
 use efcl::{bold, color, Color};
 use std::collections::HashMap;
 
+#[derive(Debug, Copy, Clone)]
+pub enum AssemblyArchitecture {
+    X86_64,
+    RISCV,
+}
+
 pub trait Parser {
     fn variable_check_pop(&mut self) -> Option<Token>;
     fn match_token_type(&mut self, token: Token);
@@ -17,6 +23,7 @@ pub trait Parser {
     fn asm_sub(&mut self);
     fn output_asm(&mut self) -> Vec<String>;
     fn reset_asm(&mut self);
+    fn set_asm_arch(&mut self, assembly_arch: AssemblyArchitecture);
 }
 
 #[derive(Debug)]
@@ -30,7 +37,9 @@ pub struct ParserState {
     function_memory: HashMap<String, Vec<Token>>,
     token_index: usize,
     assembly: Vec<String>,
+    assembly_arch: AssemblyArchitecture,
     temp_reg_index: i8,
+    temp_reg_index_init: i8,
 }
 
 impl Parser for ParserState {
@@ -38,9 +47,23 @@ impl Parser for ParserState {
         return self.assembly.clone();
     }
 
+    fn set_asm_arch(&mut self, assembly_arch: AssemblyArchitecture) {
+        self.assembly_arch = assembly_arch;
+        match assembly_arch {
+            AssemblyArchitecture::RISCV => {
+                self.temp_reg_index_init = 0;
+                self.temp_reg_index = self.temp_reg_index_init;
+            }
+            AssemblyArchitecture::X86_64 => {
+                self.temp_reg_index_init = 8;
+                self.temp_reg_index = self.temp_reg_index_init;
+            }
+        }
+    }
+
     fn reset_asm(&mut self) {
         self.assembly = vec![];
-        self.temp_reg_index = 0;
+        self.temp_reg_index = self.temp_reg_index_init;
     }
 
     fn convert_to_bool(&mut self, first: Option<Token>, token: Token) {
@@ -139,29 +162,62 @@ impl Parser for ParserState {
     }
 
     fn asm_li(&mut self, token: Token) {
-        self.assembly
-            .push(format!("li t{} {}", self.temp_reg_index, token.value));
-        self.temp_reg_index += 1;
+        match self.assembly_arch {
+            AssemblyArchitecture::RISCV => {
+                self.assembly
+                    .push(format!("li t{} {}", self.temp_reg_index, token.value));
+                self.temp_reg_index += 1;
+            }
+            AssemblyArchitecture::X86_64 => {
+                self.assembly
+                    .push(format!("mov r{} {}", self.temp_reg_index, token.value));
+                self.temp_reg_index += 1;
+            }
+        }
     }
 
     fn asm_add(&mut self) {
-        self.assembly.push(format!(
-            "add t{} t{} t{}",
-            self.temp_reg_index - 2,
-            self.temp_reg_index - 2,
-            self.temp_reg_index - 1
-        ));
-        self.temp_reg_index -= 1;
+        match self.assembly_arch {
+            AssemblyArchitecture::RISCV => {
+                self.assembly.push(format!(
+                    "add t{} t{} t{}",
+                    self.temp_reg_index - 2,
+                    self.temp_reg_index - 2,
+                    self.temp_reg_index - 1
+                ));
+                self.temp_reg_index -= 1;
+            }
+            AssemblyArchitecture::X86_64 => {
+                self.assembly.push(format!(
+                    "add r{} r{}",
+                    self.temp_reg_index - 2,
+                    self.temp_reg_index - 1
+                ));
+                self.temp_reg_index -= 1;
+            }
+        }
     }
 
     fn asm_sub(&mut self) {
-        self.assembly.push(format!(
-            "sub t{} t{} t{}",
-            self.temp_reg_index - 2,
-            self.temp_reg_index - 2,
-            self.temp_reg_index - 1
-        ));
-        self.temp_reg_index -= 1;
+        match self.assembly_arch {
+            AssemblyArchitecture::RISCV => {
+                self.assembly.push(format!(
+                    "sub t{} t{} t{}",
+                    self.temp_reg_index - 2,
+                    self.temp_reg_index - 2,
+                    self.temp_reg_index - 1
+                ));
+                self.temp_reg_index -= 1;
+            }
+            AssemblyArchitecture::X86_64 => {
+                self.assembly.push(format!(
+                    "sub r{} r{}",
+                    self.temp_reg_index - 2,
+                    self.temp_reg_index - 1
+                ));
+                self.temp_reg_index -= 1;
+            }
+        }
     }
 
     fn match_token_type(&mut self, token: Token) {
@@ -650,7 +706,9 @@ pub fn create_parser(verbose: bool) -> ParserState {
         function_stack: Vec::<Token>::new(),
         token_index: 0,
         assembly: Vec::<String>::new(),
+        assembly_arch: AssemblyArchitecture::RISCV,
         temp_reg_index: 0,
+        temp_reg_index_init: 0,
     }
 }
 
