@@ -157,6 +157,13 @@ pub struct Token {
     pub value: String,
 }
 
+pub enum TokenValue {
+    StringValue(String),
+    IntValue(i64),
+    DecValue(f64),
+    VecValue(Vec<TokenValue>),
+}
+
 fn is_part_int_numeric(part: &str) -> bool {
     let mut chars = part.chars();
 
