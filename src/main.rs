@@ -11,14 +11,20 @@ pub mod lexer;
 pub mod parse;
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "Component", about = "A programming language for math using postfix notation")]
+#[structopt(
+    name = "Component",
+    about = "A programming language for math using postfix notation"
+)]
 struct Opt {
+    /// Print the stack and lexer information on each command
     #[structopt(short, long)]
     verbose: bool,
 
+    /// Use `x86` or `x86-64` to get x86-64 assembly and use `RISCV` or `RISC-V` for RISC-V assembly
     #[structopt(short, long)]
     asm: Option<String>,
 
+    /// Specify an input Component file to be run
     #[structopt(short, long)]
     filename: Option<String>,
 }
