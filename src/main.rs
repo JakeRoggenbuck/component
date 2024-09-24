@@ -85,6 +85,11 @@ fn interactive(verbose: bool, asm: Option<AssemblyArchitecture>) {
         p.set_asm_arch(a);
     }
 
+    println!("\n{} {} -- {}", color!(Color::YELLOW, bold!(">").as_str()), bold!("Component").as_str(), bold!("v0.1.0").as_str());
+    println!("------------------------------------------------------");
+    println!("A programming language for math using postfix notation");
+    println!("-- Source: https://github.com/JakeRoggenbuck/component");
+
     loop {
         print!("{}", color!(Color::GREEN, bold!("\n> ").as_str()));
         stdout().flush().expect("Failed to flush stdout");
