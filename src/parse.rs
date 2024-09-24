@@ -239,8 +239,11 @@ impl Parser for ParserState {
             }
 
             TokenType::DoubleQuestion => {
-                println!("Guide: ");
+                println!("\nGuide: ");
                 println!("------------------------------------------------------");
+                println!(
+                    "The full docs are available at https://github.com/JakeRoggenbuck/component\n"
+                );
                 println!("Component uses Postfix Notation.");
                 println!(
                     "Postfix Notion has the arguments first, and then the function or operation."
@@ -249,12 +252,31 @@ impl Parser for ParserState {
                     "In the below example, we are adding 1 and 2 with the + operator to get 3."
                 );
                 println!("Try typing the following into the interactive prompt:");
-                println!("\n\t{}", bold!("1 2 +"));
-                println!("\nComponent has a lot of the operators you would expect in math.");
-                println!("Addition with {}", bold!("+"));
-                println!("Subtraction with {}", bold!("-"));
-                println!("Multiplication with {}", bold!("*"));
-                println!("Division with {}", bold!("/"));
+                println!("\n\t{}\n", bold!("1 2 +"));
+                println!("It should look this this once it's been typed in and you press enter:");
+                println!("{}{}", color!(Color::GREEN, bold!("> ").as_str()), "1 2 +");
+                println!(
+                    "{}{}",
+                    color!(Color::GREEN, bold!("-> ").as_str()),
+                    color!(Color::BLUE, bold!("3").as_str())
+                );
+                println!("\nComponent has a lot of the operators you would expect from math and other languages:");
+                println!("{} addition", bold!("+"));
+                println!("{} subtraction", bold!("-"));
+                println!("{} mltiplication", bold!("*"));
+                println!("{} division", bold!("/"));
+                println!("{} exponentiation", bold!("^"));
+                println!("\nSome that may be familar from other languages:");
+                println!("{} logical not", bold!("!"));
+                println!("\nAnd some that may not be as familar:");
+                println!("{} conditional assignment", bold!("?"));
+                println!("\nComponent also has functions that can be called in the same was as operators:");
+                println!("{} square root", bold!("sqrt"));
+                println!("\nAnd build in constants:");
+                println!("{} Euler's number", bold!("e"));
+                println!("{} Speed of light in m/s", bold!("C"));
+                println!("{} Pi", bold!("pi"));
+                println!("{} and {}", bold!("true"), bold!("false"));
             }
 
             TokenType::BoolLiteral => match token.value.as_str() {
