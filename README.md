@@ -20,6 +20,53 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 
 Note that the symbol `>` is used in code example to show that these expressions are being put into a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) and evaluated. These symbols at the start of the expression are not apart of the syntax.
 
+## Guide
+
+Component uses Postfix Notation.
+Postfix Notion has the arguments first, and then the function or operation.
+In the below example, we are adding 1 and 2 with the + operator to get 3.
+Try typing the following into the interactive prompt:
+```
+1 2 +
+```
+It should look this this once it's been typed in and you press enter:
+```
+> 1 2 +
+-> 3
+```
+
+Component has a lot of the operators you would expect from math and other languages:
+```
++ addition
+- subtraction
+* mltiplication
+/ division
+^ exponentiation
+```
+
+Some that may be familar from other languages:
+```
+! logical not
+```
+
+And some that may not be as familar:
+```
+? conditional assignment
+```
+
+Component also has functions that can be called in the same was as operators:
+```
+sqrt square root
+```
+
+And build in constants:
+```
+e Euler's number
+C Speed of light in m/s
+pi Pi
+true and false
+```
+
 ## Keywords
 
 - `int` converts types into NumericIntLiteral if possible
