@@ -11,7 +11,7 @@ pub mod lexer;
 pub mod parse;
 
 #[derive(Debug, StructOpt)]
-#[structopt(name = "example", about = "An example of StructOpt usage.")]
+#[structopt(name = "Component", about = "A programming language for math using postfix notation")]
 struct Opt {
     #[structopt(short, long)]
     verbose: bool,
