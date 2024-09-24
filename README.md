@@ -67,7 +67,7 @@ pi Pi
 true and false
 ```
 
-## Keywords
+## Full List of Keywords
 
 - `int` converts types into NumericIntLiteral if possible
 - `dec` converts types into NumericDecLiteral if possible
