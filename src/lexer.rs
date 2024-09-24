@@ -88,6 +88,7 @@ pub enum TokenType {
     Tag,
     Reference,
     Question,
+    DoubleQuestion,
     At,
     Percent,
     Bang,
@@ -213,7 +214,7 @@ impl TokenTrait for Token {
         let token_str = tokens.as_str();
         let mut token = Token::default();
 
-        if tokens.len() == 1 {
+        if tokens.len() < 3 {
             let token_type = match token_str {
                 "{" => TokenType::LeftBrace,
                 "}" => TokenType::RightBrace,
@@ -240,6 +241,7 @@ impl TokenTrait for Token {
                 "#" => TokenType::Tag,
                 "&" => TokenType::Reference,
                 "?" => TokenType::Question,
+                "??" => TokenType::DoubleQuestion,
                 "@" => TokenType::At,
                 "%" => TokenType::Percent,
                 "!" => TokenType::Bang,

@@ -238,6 +238,25 @@ impl Parser for ParserState {
                 self.stack.push(token);
             }
 
+            TokenType::DoubleQuestion => {
+                println!("Guide: ");
+                println!("------------------------------------------------------");
+                println!("Component uses Postfix Notation.");
+                println!(
+                    "Postfix Notion has the arguments first, and then the function or operation."
+                );
+                println!(
+                    "In the below example, we are adding 1 and 2 with the + operator to get 3."
+                );
+                println!("Try typing the following into the interactive prompt:");
+                println!("\n\t{}", bold!("1 2 +"));
+                println!("\nComponent has a lot of the operators you would expect in math.");
+                println!("Addition with {}", bold!("+"));
+                println!("Subtraction with {}", bold!("-"));
+                println!("Multiplication with {}", bold!("*"));
+                println!("Division with {}", bold!("/"));
+            }
+
             TokenType::BoolLiteral => match token.value.as_str() {
                 "true" => self.stack.push(Token {
                     token_type: TokenType::BoolLiteral,
