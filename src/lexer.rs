@@ -101,6 +101,9 @@ pub enum TokenType {
     SingleQuote,
     DoubleQuote,
 
+    StackKeyword,
+    VarsKeyword,
+
     TypeNumberKeyword,
     // "int"
     TypeIntKeyword,
@@ -137,6 +140,8 @@ fn is_type(maybe_type: &str) -> TokenType {
         "fn" => TokenType::Function,
         "true" => TokenType::BoolLiteral,
         "false" => TokenType::BoolLiteral,
+        "vars" => TokenType::VarsKeyword,
+        "stack" => TokenType::StackKeyword,
 
         // Other types
         // "literal" | "type" | "option" | "string" => true,

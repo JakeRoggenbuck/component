@@ -330,6 +330,18 @@ impl Parser for ParserState {
                 }
             }
 
+            TokenType::StackKeyword => {
+                for var in &self.stack {
+                    println!("{:?}", var);
+                }
+            }
+
+            TokenType::VarsKeyword => {
+                for var in &self.local_memory {
+                    println!("{:?}", var);
+                }
+            }
+
             TokenType::Identifier => {
                 let var = self.local_memory.get(&token.value);
                 let func = self.function_memory.get(&token.value);
