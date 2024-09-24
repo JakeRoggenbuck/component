@@ -72,6 +72,8 @@ true and false
 - `int` converts types into NumericIntLiteral if possible
 - `dec` converts types into NumericDecLiteral if possible
 - `bool` converts types into BoolLiteral if possible
+- `vars` prints all variables
+- `stack` prints the current stack
 
 ## Constants
 - `e` Euler's number
