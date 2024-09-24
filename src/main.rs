@@ -94,6 +94,11 @@ fn interactive(verbose: bool, asm: Option<AssemblyArchitecture>) {
     println!("------------------------------------------------------");
     println!("A programming language for math using postfix notation");
     println!("-- Source: https://github.com/JakeRoggenbuck/component");
+    println!(
+        "-- Use: {} for the Component guide and {} to exit.",
+        color!(Color::GREEN, bold!("??").as_str()),
+        color!(Color::GREEN, bold!("Ctrl+c").as_str()),
+    );
 
     loop {
         print!("{}", color!(Color::GREEN, bold!("\n> ").as_str()));
