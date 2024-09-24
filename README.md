@@ -9,6 +9,8 @@ A programming language for math using postfix notation.
 
 ## About
 
+![image](https://github.com/user-attachments/assets/ea784519-74b4-4f44-9a7d-e15a2e91b44a)
+
 Component is the follow-up language to [Basis](https://github.com/JakeRoggenbuck/basis) which is also a math language. Component was built with insights learned from writing Basis. The main difference between the two is that Basis has a more complicated syntax which included types and data structures whereas Component uses postfix notation with the addition of functions as operations.
 
 The code for Component and Basis use the same lexer. Component is mainly different because it has a different syntax. The lexer for basis was written generally enough that this code can be shared. It also helps that Basis is a math language inspired by postfix notation but not exclusively postfix notation.
