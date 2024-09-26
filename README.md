@@ -20,6 +20,24 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 
 Note that the symbol `>` is used in code example to show that these expressions are being put into a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) and evaluated. These symbols at the start of the expression are not apart of the syntax.
 
+```
+Component 0.1.0
+A programming language for math using postfix notation
+
+USAGE:
+    component [FLAGS] [OPTIONS]
+
+FLAGS:
+    -h, --help       Prints help information
+    -V, --version    Prints version information
+    -v, --verbose    Print the stack and lexer information on each command
+
+OPTIONS:
+    -a, --asm <asm>              Use `x86` or `x86-64` to get x86-64 assembly and use `RISCV` or `RISC-V` for RISC-V
+                                 assembly
+    -f, --filename <filename>    Specify an input Component file to be run
+```
+
 ## Guide
 
 Component uses Postfix Notation.
