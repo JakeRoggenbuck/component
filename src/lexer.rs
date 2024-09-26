@@ -162,14 +162,16 @@ pub trait TokenTrait {
 // supported like int, float, string, etc.
 pub struct Token {
     pub token_type: TokenType,
-    pub value: String,
+    pub value: TokenValue,
 }
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum TokenValue {
     StringValue(String),
     IntValue(i64),
     DecValue(f64),
     VecValue(Vec<TokenValue>),
+    None,
 }
 
 fn is_part_int_numeric(part: &str) -> bool {
@@ -213,7 +215,7 @@ impl TokenTrait for Token {
     fn default() -> Self {
         return Token {
             token_type: TokenType::NoType,
-            value: String::new(),
+            value: TokenValue::None,
         };
     }
 
@@ -266,14 +268,14 @@ impl TokenTrait for Token {
 
             if token_type != TokenType::NoType {
                 token.token_type = token_type;
-                token.value = tokens;
+                token.value = TokenValue::StringValue(tokens);
                 return token;
             }
         }
 
         if is_part_int_numeric(token_str) {
             token.token_type = TokenType::NumericIntLiteral;
-            token.value = tokens;
+            token.value = TokenValue::StringValue(tokens);
             return token;
         }
 
@@ -281,18 +283,18 @@ impl TokenTrait for Token {
         let tok = is_type(token_str);
         if tok != TokenType::NoType {
             token.token_type = tok;
-            token.value = tokens;
+            token.value = TokenValue::StringValue(tokens);
             return token;
         }
 
         // Check for identifiers that are not keywords
         if is_part_alpha(token_str) {
             token.token_type = TokenType::Identifier;
-            token.value = tokens;
+            token.value = TokenValue::StringValue(tokens);
             return token;
         }
 
-        token.value = tokens;
+        token.value = TokenValue::StringValue(tokens);
         return token;
     }
 
@@ -405,7 +407,10 @@ mod tests {
             TokenType::NumericIntLiteral
         );
 
-        assert_eq!(Token::tokenize("1".to_string()).value, "1".to_string());
+        assert_eq!(
+            Token::tokenize("1".to_string()).value,
+            TokenValue::StringValue("1".to_string())
+        );
 
         // Note: "1 " should NOT be a valid token, because the value given to tokenize should cut
         // off after the 1 because of the ending token check with ends_token
@@ -415,7 +420,10 @@ mod tests {
             Token::tokenize("1 ".to_string()).token_type,
             TokenType::NumericIntLiteral
         );
-        assert_ne!(Token::tokenize("1 ".to_string()).value, "1".to_string());
+        assert_ne!(
+            Token::tokenize("1 ".to_string()).value,
+            TokenValue::StringValue("1".to_string())
+        );
     }
 
     #[test]
@@ -424,9 +432,9 @@ mod tests {
 
         lex.lines = vec!["1 2 *".to_string()];
 
-        assert_eq!(lex.next().value, "1");
-        assert_eq!(lex.next().value, "2");
-        assert_eq!(lex.next().value, "*");
+        assert_eq!(lex.next().value, TokenValue::StringValue("1".to_string()));
+        assert_eq!(lex.next().value, TokenValue::StringValue("2".to_string()));
+        assert_eq!(lex.next().value, TokenValue::StringValue("*".to_string()));
 
         lex.reset_line();
 
@@ -438,9 +446,9 @@ mod tests {
 
         lex.lines = vec!["1 1 +".to_string()];
 
-        assert_eq!(lex.next().value, "1");
-        assert_eq!(lex.next().value, "1");
-        assert_eq!(lex.next().value, "+");
+        assert_eq!(lex.next().value, TokenValue::StringValue("1".to_string()));
+        assert_eq!(lex.next().value, TokenValue::StringValue("1".to_string()));
+        assert_eq!(lex.next().value, TokenValue::StringValue("+".to_string()));
 
         lex.reset_line();
 
@@ -452,9 +460,9 @@ mod tests {
 
         lex.lines = vec!["2 5 /".to_string()];
 
-        assert_eq!(lex.next().value, "2");
-        assert_eq!(lex.next().value, "5");
-        assert_eq!(lex.next().value, "/");
+        assert_eq!(lex.next().value, TokenValue::StringValue("2".to_string()));
+        assert_eq!(lex.next().value, TokenValue::StringValue("5".to_string()));
+        assert_eq!(lex.next().value, TokenValue::StringValue("/".to_string()));
 
         lex.reset_line();
 
