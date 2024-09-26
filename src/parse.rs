@@ -24,6 +24,7 @@ pub trait Parser {
     fn output_asm(&mut self) -> Vec<String>;
     fn reset_asm(&mut self);
     fn set_asm_arch(&mut self, assembly_arch: AssemblyArchitecture);
+    fn convert_to_int(&mut self, token: Token);
 }
 
 #[derive(Debug)]
@@ -43,6 +44,30 @@ pub struct ParserState {
 }
 
 impl Parser for ParserState {
+    fn convert_to_int(&mut self, token: Token) {
+        let first = self.variable_check_pop();
+
+        match first {
+            Some(a) => match a.token_type {
+                TokenType::NumericIntLiteral
+                | TokenType::NumericDecLiteral
+                | TokenType::BoolLiteral => {
+                    let a_float_res = a.value.parse::<f64>();
+                    match a_float_res {
+                        Ok(a_val) => self.stack.push(Token {
+                            token_type: TokenType::NumericIntLiteral,
+                            value: (a_val as i64).to_string(),
+                        }),
+                        Err(_) => wrong_type_error_first(a.value, token.value),
+                    }
+                }
+
+                _ => invalid_type_cast_error(String::from("NumericIntLiteral"), a, token),
+            },
+            None => stack_empty_error(),
+        }
+    }
+
     fn output_asm(&mut self) -> Vec<String> {
         return self.assembly.clone();
     }
@@ -392,28 +417,12 @@ impl Parser for ParserState {
                 self.assign_value(first, second, token);
             }
 
+            TokenType::RoundKeyword => {
+                self.convert_to_int(token);
+            }
+
             TokenType::TypeIntKeyword => {
-                let first = self.variable_check_pop();
-
-                match first {
-                    Some(a) => match a.token_type {
-                        TokenType::NumericIntLiteral
-                        | TokenType::NumericDecLiteral
-                        | TokenType::BoolLiteral => {
-                            let a_float_res = a.value.parse::<f64>();
-                            match a_float_res {
-                                Ok(a_val) => self.stack.push(Token {
-                                    token_type: TokenType::NumericIntLiteral,
-                                    value: (a_val as i64).to_string(),
-                                }),
-                                Err(_) => wrong_type_error_first(a.value, token.value),
-                            }
-                        }
-
-                        _ => invalid_type_cast_error(String::from("NumericIntLiteral"), a, token),
-                    },
-                    None => stack_empty_error(),
-                }
+                self.convert_to_int(token);
             }
 
             TokenType::TypeDecKeyword => {

@@ -115,6 +115,7 @@ pub enum TokenType {
     TypeSizeKeyword,
     TypeSqrtKeyword,
     TypeBoolKeyword,
+    RoundKeyword,
 
     Function,
 
@@ -142,6 +143,7 @@ fn is_type(maybe_type: &str) -> TokenType {
         "false" => TokenType::BoolLiteral,
         "vars" => TokenType::VarsKeyword,
         "stack" => TokenType::StackKeyword,
+        "round" => TokenType::RoundKeyword,
 
         // Other types
         // "literal" | "type" | "option" | "string" => true,
