@@ -9,7 +9,13 @@ A programming language that compiles to x86-64 assembly for math using postfix n
 
 ## About
 
+Create a program in the interpreter or run a code file.
+
 ![image](https://github.com/user-attachments/assets/ea784519-74b4-4f44-9a7d-e15a2e91b44a)
+
+Component converts your code to **RISC-V** or **x86-64** assembly to be run.
+
+![image](https://github.com/user-attachments/assets/4bd224e4-45bf-48f4-8a83-fe0db297ceeb)
 
 Component is the follow-up language to [Basis](https://github.com/JakeRoggenbuck/basis) which is also a math language. Component was built with insights learned from writing Basis. The main difference between the two is that Basis has a more complicated syntax which included types and data structures whereas Component uses postfix notation with the addition of functions as operations.
 
