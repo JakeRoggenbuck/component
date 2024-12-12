@@ -17,6 +17,8 @@ Component converts your code to **RISC-V** or **x86-64** assembly to be run.
 
 ![image](https://github.com/user-attachments/assets/4bd224e4-45bf-48f4-8a83-fe0db297ceeb)
 
+See [convert-to-assembly](https://github.com/JakeRoggenbuck/component?tab=readme-ov-file#convert-to-assembly) for more info.
+
 Component is the follow-up language to [Basis](https://github.com/JakeRoggenbuck/basis) which is also a math language. Component was built with insights learned from writing Basis. The main difference between the two is that Basis has a more complicated syntax which included types and data structures whereas Component uses postfix notation with the addition of functions as operations.
 
 The code for Component and Basis use the same lexer. Component is mainly different because it has a different syntax. The lexer for basis was written generally enough that this code can be shared. It also helps that Basis is a math language inspired by postfix notation but not exclusively postfix notation.
