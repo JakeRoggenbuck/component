@@ -6,6 +6,7 @@ A programming language that compiles to x86-64 assembly for math using postfix n
 <br>
 [![Rust](https://img.shields.io/github/actions/workflow/status/jakeroggenbuck/component/rust.yml?branch=main&style=for-the-badge)](https://github.com/JakeRoggenbuck/component/actions)
 ![GitHub code size in bytes](https://img.shields.io/github/languages/code-size/jakeroggenbuck/component?style=for-the-badge)
+[![Rust](https://img.shields.io/badge/Rust-1A5D8A?style=for-the-badge&logo=rust&logoColor=white)](https://github.com/JakeRoggenbuck?tab=repositories&q=&type=&language=rust&sort=stargazers)
 
 ## About
 
