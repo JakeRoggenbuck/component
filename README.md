@@ -80,7 +80,7 @@ sqrt square root
 And build-in constants:
 ```
 e Euler's number
-C Speed of light in m/s
+C Speed of light (in m/s)
 pi Pi
 true and false
 ```
@@ -96,7 +96,7 @@ true and false
 ## Constants
 - `e` Euler's number
 - `pi` Pi
-- `C` Speed of light in m/s
+- `C` Speed of light (in m/s)
 - `true` Boolean true
 - `false` Boolean false
 
@@ -168,7 +168,7 @@ Create an addition function called `foo`. Note that to start a function you do i
 -> 3
 ```
 
-Here is the example of calculating the speed dilation of an object at velocity `v` in m/s for time `t` in seconds. More info about this in the section [#Component-in-action](#component-in-action)
+Here is the example of calculating the speed dilation of an object at velocity `v` (in m/s) for time `t` (in seconds). More info about this in the section [#Component-in-action](#component-in-action)
 
 ```
 > > t 1 v 2 ^ C 2 ^ / - sqrt / s fn
@@ -267,7 +267,7 @@ Error: Stack Empty [E4]
 
 #### Operation Not Implemented [E5]
 
-The Operation Not Implemented error occurs when a non-identifier symbol has been parsed that has not gotten functionality yet. Symbol here meaning one or many characters (e.g. `foo` or `123`). Since symbols that are not keywords or existing identifiers get read as identifiers (so long they follow the identifier rules), there are few things that trigger the Operation Not Implemented error. The one class of symbols that do cause this error are characters like `#` and `$` which have not been assigned any operation.
+The Operation Not Implemented error occurs when a non-identifier symbol has been parsed that has not gotten functionality yet. Symbol here meaning one or many characters (e.g. `foo` or `123`). Since symbols that are not keywords or existing identifiers get read as identifiers (so long they follow the identifier rules), there are few cases that trigger the Operation Not Implemented error. The one class of symbols that do cause this error are characters like `#` and `$` which have not been assigned any operation.
 
 ```
 > #
