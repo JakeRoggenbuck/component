@@ -27,7 +27,7 @@ The code for Component and Basis use the same lexer. Component is mainly differe
 ## Interactive interpreter
 ![image](https://github.com/user-attachments/assets/3d1978d6-c3b7-4954-9ba5-6b8958e396b1)
 
-Note that the symbol `>` is used in code example to show that these expressions are being put into a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) and evaluated. These symbols at the start of the expression are not apart of the syntax.
+Note that the symbol `>` is used in code example to show that these expressions are being put into a [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop) and evaluated. These symbols at the start of the expression are not a part of the syntax.
 
 ```
 Component 0.1.0
@@ -50,13 +50,13 @@ OPTIONS:
 ## Guide
 
 Component uses Postfix Notation.
-Postfix Notion has the arguments first, and then the function or operation.
+Postfix Notation has the arguments first, and then the function or operation.
 In the below example, we are adding 1 and 2 with the + operator to get 3.
 Try typing the following into the interactive prompt:
 ```
 1 2 +
 ```
-It should look this this once it's been typed in and you press enter:
+It should look like this once it's been typed in and you press enter:
 ```
 > 1 2 +
 -> 3
@@ -66,30 +66,30 @@ Component has a lot of the operators you would expect from math and other langua
 ```
 + addition
 - subtraction
-* mltiplication
+* multiplication
 / division
 ^ exponentiation
 ```
 
-Some that may be familar from other languages:
+Some that may be familiar from other languages:
 ```
 ! logical not
 ```
 
-And some that may not be as familar:
+And some that may not be as familiar:
 ```
 ? conditional assignment
 ```
 
-Component also has functions that can be called in the same was as operators:
+Component also has functions that can be called in the same way as operators:
 ```
 sqrt square root
 ```
 
-And build in constants:
+And build-in constants:
 ```
 e Euler's number
-C Speed of light in m/s
+C Speed of light (in m/s)
 pi Pi
 true and false
 ```
@@ -105,7 +105,7 @@ true and false
 ## Constants
 - `e` Euler's number
 - `pi` Pi
-- `C` Speed of light in m/s
+- `C` Speed of light (in m/s)
 - `true` Boolean true
 - `false` Boolean false
 
@@ -177,7 +177,7 @@ Create an addition function called `foo`. Note that to start a function you do i
 -> 3
 ```
 
-Here is the example of caluclating the speed dilation of an object at velocity `v` in m/s for time `t` in seconds. More info about this in the section [#Component-in-action](#component-in-action)
+Here is the example of calculating the speed dilation of an object at velocity `v` (in m/s) for time `t` (in seconds). More info about this in the section [#Component-in-action](#component-in-action)
 
 ```
 > > t 1 v 2 ^ C 2 ^ / - sqrt / s fn
@@ -276,7 +276,7 @@ Error: Stack Empty [E4]
 
 #### Operation Not Implemented [E5]
 
-The Operation Not Implemented error occurs when a non-identifier symbol has been parsed that has not gotten functionality yet. Symbol here meaning one or many characters (e.g. `foo` or `123`). Since symbols that are not keywords or existing identifiers get read as identifiers (so long they follow the identifier rules), there are few things that trigger the Operation Not Implemented error. The one class of symbols that do cause this error are characters like `#` and `$` which have not been assigned any operation.
+The Operation Not Implemented error occurs when a non-identifier symbol has been parsed that has not gotten functionality yet. Symbol here meaning one or many characters (e.g. `foo` or `123`). Since symbols that are not keywords or existing identifiers get read as identifiers (so long they follow the identifier rules), there are few cases that trigger the Operation Not Implemented error. The one class of symbols that do cause this error are characters like `#` and `$` which have not been assigned any operation.
 
 ```
 > #
