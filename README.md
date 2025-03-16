@@ -86,7 +86,7 @@ Component also has functions that can be called in the same way as operators:
 sqrt square root
 ```
 
-And build-in constants:
+And built-in constants:
 ```
 e Euler's number
 C Speed of light (in m/s)
@@ -267,7 +267,7 @@ a int
 ```
 
 #### Stack Empty [E4]
-The Stack Empty error happens when the function or operation that has been called requires more arguments than are currently on the stack. This is an indication that not enough variables where provided. In the example below, a single NumericIntLiteral has been added to the stack and then the Addition operation has been called. This gives and error because the Addition operation requires two arguments.
+The Stack Empty error happens when the function or operation that has been called requires more arguments than are currently on the stack. This is an indication that not enough variables where provided. In the example below, a single NumericIntLiteral has been added to the stack and then the Addition operation has been called. This gives an error because the Addition operation requires two arguments.
 
 ```
 > 1 +
